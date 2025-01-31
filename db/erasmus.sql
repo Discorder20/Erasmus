@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Sty 05, 2025 at 10:51 PM
--- Wersja serwera: 10.4.32-MariaDB
--- Wersja PHP: 8.2.12
+-- Host: localhost
+-- Generation Time: Jan 11, 2025 at 03:47 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `erasmus`
+-- Database: `Erasmus`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `cities`
+-- Table structure for table `cities`
 --
 
 CREATE TABLE `cities` (
@@ -34,10 +34,22 @@ CREATE TABLE `cities` (
   `coord_y` decimal(10,6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `cities`
+--
+
+INSERT INTO `cities` (`id`, `name`, `coord_x`, `coord_y`) VALUES
+(1, 'Płock', 52.547056, 19.711214),
+(2, 'Włocławek', 52.648480, 19.069693),
+(3, 'Gąbin', 52.397302, 19.735961),
+(4, 'Gostynin', 52.428788, 19.461926),
+(5, 'Słupno', 52.505663, 19.836969),
+(6, 'Bielsk', 52.671092, 19.799228);
+
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `games`
+-- Table structure for table `games`
 --
 
 CREATE TABLE `games` (
@@ -50,10 +62,19 @@ CREATE TABLE `games` (
   `description` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `games`
+--
+
+INSERT INTO `games` (`id`, `author_id`, `title`, `creation_date`, `coord_x`, `coord_y`, `description`) VALUES
+(1, 2, 'Sylwester u Zduniaka', '2024-12-31', 53.066486, 21.149823, 'Impreza sylwestrowa ze wstępem wolnym dla każdego w Przytułach'),
+(2, 1, 'Rowerowe szaleństwo', '2025-01-13', 52.541332, 19.755332, 'Zapraszam wszystkich zainteresowanych do wspólnych szaleństw na Pump Tracku. Wszyscy mile widziani.'),
+(3, 3, 'Wyjście z domu', '2025-01-16', 52.559106, 19.695203, 'Organizuję wyjście po zajęciach lekcyjnych na kebaba. Inicjatywa ma na celu integrację z innymi osobami zamiast przesiadywania w domu i grania na komputerze.');
+
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `game_tags`
+-- Table structure for table `game_tags`
 --
 
 CREATE TABLE `game_tags` (
@@ -61,10 +82,24 @@ CREATE TABLE `game_tags` (
   `tag_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `game_tags`
+--
+
+INSERT INTO `game_tags` (`game_id`, `tag_id`) VALUES
+(1, 2),
+(1, 4),
+(1, 9),
+(2, 1),
+(2, 7),
+(2, 8),
+(3, 4),
+(3, 7);
+
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `login_details`
+-- Table structure for table `login_details`
 --
 
 CREATE TABLE `login_details` (
@@ -85,7 +120,7 @@ INSERT INTO `login_details` (`id`, `login`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `tags`
+-- Table structure for table `tags`
 --
 
 CREATE TABLE `tags` (
@@ -93,10 +128,26 @@ CREATE TABLE `tags` (
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `tags`
+--
+
+INSERT INTO `tags` (`id`, `name`) VALUES
+(1, 'Sport'),
+(2, 'Zabawa'),
+(3, 'Zdrowie'),
+(4, 'Ciekawe'),
+(5, 'Dla młodszych'),
+(6, 'Dla starszych'),
+(7, 'Dla każdego'),
+(8, 'Wyczynowe'),
+(9, 'Nie zdrowe'),
+(10, 'Edukacyjne');
+
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `tokens`
+-- Table structure for table `tokens`
 --
 
 CREATE TABLE `tokens` (
@@ -108,7 +159,7 @@ CREATE TABLE `tokens` (
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -129,49 +180,49 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone_number`) V
 (3, 'Paweł', 'Krzeszewski', 'krzeszewski.pawel@szkola.elektrykplock.edu.pl', '101101101');
 
 --
--- Indeksy dla zrzutów tabel
+-- Indexes for dumped tables
 --
 
 --
--- Indeksy dla tabeli `cities`
+-- Indexes for table `cities`
 --
 ALTER TABLE `cities`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `games`
+-- Indexes for table `games`
 --
 ALTER TABLE `games`
   ADD PRIMARY KEY (`id`),
   ADD KEY `games_ibfk_1` (`author_id`);
 
 --
--- Indeksy dla tabeli `game_tags`
+-- Indexes for table `game_tags`
 --
 ALTER TABLE `game_tags`
   ADD PRIMARY KEY (`game_id`,`tag_id`),
   ADD KEY `game_tags_ibfk_2` (`tag_id`);
 
 --
--- Indeksy dla tabeli `login_details`
+-- Indexes for table `login_details`
 --
 ALTER TABLE `login_details`
   ADD KEY `login_details_ibfk_1` (`id`);
 
 --
--- Indeksy dla tabeli `tags`
+-- Indexes for table `tags`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `tokens`
+-- Indexes for table `tokens`
 --
 ALTER TABLE `tokens`
   ADD KEY `tokens_ibfk_1` (`id`);
 
 --
--- Indeksy dla tabeli `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
@@ -184,19 +235,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `cities`
 --
 ALTER TABLE `cities`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `games`
 --
 ALTER TABLE `games`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `users`
