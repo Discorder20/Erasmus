@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {logInLoginPost} from '@/src/client';
+import {DefaultApi} from '@/src/client';
 import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
@@ -19,7 +19,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const response = await logInLoginPost(login, password);
+      const response = await LogInLoginPost(login, password);
       console.log(response);
 
       if (response?.data) {
@@ -28,6 +28,7 @@ export default function LoginScreen() {
         Alert.alert("Błąd logowania", "Brak danych w odpowiedzi.");
       }
     } catch (error) {
+       console.log(error);
       if (error?.response) {
         Alert.alert("Błąd logowania", "Sprawdź dane logowania.");
         console.error("Błąd odpowiedzi:", error.response);
