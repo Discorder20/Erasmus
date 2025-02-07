@@ -10,6 +10,8 @@ from api.models.models import *
 from database.config import engine
 
 app = FastAPI()
+privateKey=b"-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgGZyhuhfsywUuAalM2sBd39j/erJU7t8z0RAvBXiCEoaUZ1Iqfhj\nuzFo/iapLaD/6rNHVkneGhSClumRkUpyvz6gTk9XEK8WcA6P4bQAqzwjzgShoXlO\n8zIRY90nMVsWQCK4y0BnPVR1L7hT7rNBqvS844NTokwfN0Rj7RqggKzXAgMBAAEC\ngYBes6PuDvkr2IM88V2Unyh9xEsmzLDwcbGPoF+9wtJy3d1wDYnBqT+Tr0CxMFaT\nq76jt2AWrI9jQkyK4RtzvJr3786gKcQUJALc9CHc9/zdf/Vva2MMu3D/oLX2MLVy\nNUyNtGptRwTAPP3OpyVKFukRpFUbvPfO90CPoB6wsEHcMQJBAMyP9IXJf9NNWzPo\nU0/jj4vyYVrMsBpwLSFmNzkFCev4s3B0to7mJo1IWHHcr9WWOeslzjwHqRiEOXNs\nUUwkLzsCQQCANT+guViOIO4iXcIcJY3Tp+JjT254JANZjvT7RAtpuFuCwNUbU2vu\ndBL/QM2lNzeoI+rzzleth/iODUlsN5cVAkEAwKkkR40L0tscdrrtHGTaoZfakUYO\n5heYqcg3YoCYY6KMffGurs+cp5vnkPWktakTS6EDqA4e+HQwF8GAoBHEWQJAQk3H\ngzJ3lsF3BjTg3zeYun5XeS6qHd3aEaX6Ejwlft5GDT/2tjQVXHORI4r7D1eYJA+3\nQbFT7L2mEKjUcO/q5QJBAL1LTYmhc5LIUg+btQvM1gJyE/m/J09zBty8rVlB5aco\nHAu4xudgho+at24U+VjoQtF0fTSeoDTEu5rzDuM4Pqc=\n-----END RSA PRIVATE KEY-----\n"
+publicKey=b"-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZyhuhfsywUuAalM2sBd39j/erJ\nU7t8z0RAvBXiCEoaUZ1IqfhjuzFo/iapLaD/6rNHVkneGhSClumRkUpyvz6gTk9X\nEK8WcA6P4bQAqzwjzgShoXlO8zIRY90nMVsWQCK4y0BnPVR1L7hT7rNBqvS844NT\nokwfN0Rj7RqggKzXAgMBAAE=\n-----END PUBLIC KEY-----\n"
 key = "erasmusApiTokenKey"
 session = Session(engine)
 
@@ -23,7 +25,8 @@ def getUser(idUser : int):
     statement = select(Users.first_name, Users.last_name,t_login_details.c.login,t_login_details.c.password).join_from(Users, t_login_details).where(Users.id == idUser)
     rowData = {}
     for row in session.execute(statement):
-        rowData = {"FirstName":row.first_name, "LastName":row.last_name, "Login":row.login, "Password":row.password}        
+        password = decode(row.password, publicKey, algorithms=["RS256"])
+        rowData = {"FirstName":row.first_name, "LastName":row.last_name, "Login":row.login, "Password":password["password"]}        
     if rowData:
         return rowData
     else:
@@ -35,8 +38,9 @@ def getUser(idUser : int):
 
 
 @app.post("/signup")
-def signUp(loginUser : str, passwordUser : str,firstName : str,lastName : str, email : str, phoneNumber : str):
+def signUp(loginUser : str, password : str,firstName : str,lastName : str, email : str, phoneNumber : str):
     idUser = 1
+    passwordUser = encode({"password":password}, privateKey, algorithm="RS256")
     statement = select(Users)
     for row in session.execute(statement):
         idUser += 1
@@ -47,7 +51,7 @@ def signUp(loginUser : str, passwordUser : str,firstName : str,lastName : str, e
                 status_code=status.HTTP_409_CONFLICT,
                 detail="User already exists",
             )
-    with engine.connect() as conn:
+    with session as conn:
             insertStatement = insert(Users).values(id = idUser, first_name = firstName, last_name = lastName, email = email, phone_number = phoneNumber)
             result = conn.execute(insertStatement)
             conn.commit()
@@ -63,7 +67,8 @@ def signUp(loginUser : str, passwordUser : str,firstName : str,lastName : str, e
 
 
 @app.post("/login")
-def logIn(loginUser : str, passwordUser : str):
+def logIn(loginUser : str, password : str):
+    passwordUser = encode({"password":password}, privateKey, algorithm="RS256")
     statement = select(t_login_details.c.id, t_login_details.c.login, t_login_details.c.password).where(t_login_details.c.login == loginUser)
     userData = []
     for row in session.execute(statement):
@@ -87,16 +92,16 @@ def logIn(loginUser : str, passwordUser : str):
     for row in engine.connect().execute(statement):
         tokenData = [row.id, row.token, row.expiration_time]
     if tokenData == []:
-        with engine.connect() as conn:
+        with session as conn:
             statement = insert(t_tokens).values(id = userData[0],expiration_time = expaire,token = tokenUser)
             result = conn.execute(statement)
             conn.commit()
             return {"token":tokenUser}
     else:
-        if datetime.now() < datetime.strptime(tokenData[2], '%y/%m/%d %H:%M:%S.%f'):
+        if datetime.now() < tokenData[2]:
             return {"token":tokenData[1]}
         else:
-            with engine.connect() as conn:
+            with session as conn:
                 statement = update(t_tokens).where(t_tokens.c.id == tokenData[0]).values(expiration_time = expaire)
                 result = conn.execute(statement)
                 conn.commit()
@@ -138,7 +143,7 @@ def addNewGame(userToken : str, title : str, coordX : float, coordY : float, des
     for row in session.execute(statement):
         idGame += 1
     userData = decode(userToken, key, algorithms=["HS256"])
-    with engine.connect() as conn:
+    with session as conn:
         insertStatement = insert(Games).values(id = idGame, author_id = userData["id"], title = title, creation_date = datetime.date(datetime.now()), coord_x = coordX, coord_y = coordY, description = description)
         result = conn.execute(insertStatement)
         conn.commit()
