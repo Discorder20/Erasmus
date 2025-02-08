@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Jan 11, 2025 at 03:47 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: 127.0.0.1
+-- Generation Time: Feb 08, 2025 at 02:06 PM
+-- Wersja serwera: 10.4.32-MariaDB
+-- Wersja PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,30 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `Erasmus`
+-- Database: `erasmus`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `cities`
+-- Struktura tabeli dla tabeli `choice_tasks`
+--
+
+CREATE TABLE `choice_tasks` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) DEFAULT NULL,
+  `task_number` int(11) NOT NULL,
+  `points` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`options`)),
+  `correct_option_index` int(11) NOT NULL,
+  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `cities`
 --
 
 CREATE TABLE `cities` (
@@ -49,7 +66,7 @@ INSERT INTO `cities` (`id`, `name`, `coord_x`, `coord_y`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `games`
+-- Struktura tabeli dla tabeli `games`
 --
 
 CREATE TABLE `games` (
@@ -74,7 +91,7 @@ INSERT INTO `games` (`id`, `author_id`, `title`, `creation_date`, `coord_x`, `co
 -- --------------------------------------------------------
 
 --
--- Table structure for table `game_tags`
+-- Struktura tabeli dla tabeli `game_tags`
 --
 
 CREATE TABLE `game_tags` (
@@ -99,7 +116,7 @@ INSERT INTO `game_tags` (`game_id`, `tag_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `login_details`
+-- Struktura tabeli dla tabeli `login_details`
 --
 
 CREATE TABLE `login_details` (
@@ -120,7 +137,23 @@ INSERT INTO `login_details` (`id`, `login`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tags`
+-- Struktura tabeli dla tabeli `number_tasks`
+--
+
+CREATE TABLE `number_tasks` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) DEFAULT NULL,
+  `task_number` int(11) NOT NULL,
+  `points` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` int(11) NOT NULL,
+  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `tags`
 --
 
 CREATE TABLE `tags` (
@@ -147,7 +180,23 @@ INSERT INTO `tags` (`id`, `name`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `tokens`
+-- Struktura tabeli dla tabeli `text_tasks`
+--
+
+CREATE TABLE `text_tasks` (
+  `id` int(11) NOT NULL,
+  `game_id` int(11) DEFAULT NULL,
+  `task_number` int(11) NOT NULL,
+  `points` int(11) NOT NULL,
+  `question` varchar(255) NOT NULL,
+  `answer` varchar(255) NOT NULL,
+  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `tokens`
 --
 
 CREATE TABLE `tokens` (
@@ -159,7 +208,7 @@ CREATE TABLE `tokens` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktura tabeli dla tabeli `users`
 --
 
 CREATE TABLE `users` (
@@ -180,49 +229,70 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone_number`) V
 (3, 'Paweł', 'Krzeszewski', 'krzeszewski.pawel@szkola.elektrykplock.edu.pl', '101101101');
 
 --
--- Indexes for dumped tables
+-- Indeksy dla zrzutów tabel
 --
 
 --
--- Indexes for table `cities`
+-- Indeksy dla tabeli `choice_tasks`
+--
+ALTER TABLE `choice_tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
+-- Indeksy dla tabeli `cities`
 --
 ALTER TABLE `cities`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `games`
+-- Indeksy dla tabeli `games`
 --
 ALTER TABLE `games`
   ADD PRIMARY KEY (`id`),
   ADD KEY `games_ibfk_1` (`author_id`);
 
 --
--- Indexes for table `game_tags`
+-- Indeksy dla tabeli `game_tags`
 --
 ALTER TABLE `game_tags`
   ADD PRIMARY KEY (`game_id`,`tag_id`),
   ADD KEY `game_tags_ibfk_2` (`tag_id`);
 
 --
--- Indexes for table `login_details`
+-- Indeksy dla tabeli `login_details`
 --
 ALTER TABLE `login_details`
   ADD KEY `login_details_ibfk_1` (`id`);
 
 --
--- Indexes for table `tags`
+-- Indeksy dla tabeli `number_tasks`
+--
+ALTER TABLE `number_tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
+-- Indeksy dla tabeli `tags`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `tokens`
+-- Indeksy dla tabeli `text_tasks`
+--
+ALTER TABLE `text_tasks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `game_id` (`game_id`);
+
+--
+-- Indeksy dla tabeli `tokens`
 --
 ALTER TABLE `tokens`
   ADD KEY `tokens_ibfk_1` (`id`);
 
 --
--- Indexes for table `users`
+-- Indeksy dla tabeli `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`);
@@ -230,6 +300,12 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `choice_tasks`
+--
+ALTER TABLE `choice_tasks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cities`
@@ -244,10 +320,22 @@ ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT for table `number_tasks`
+--
+ALTER TABLE `number_tasks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `text_tasks`
+--
+ALTER TABLE `text_tasks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -258,6 +346,12 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `choice_tasks`
+--
+ALTER TABLE `choice_tasks`
+  ADD CONSTRAINT `choice_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `games`
@@ -277,6 +371,18 @@ ALTER TABLE `game_tags`
 --
 ALTER TABLE `login_details`
   ADD CONSTRAINT `login_details_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `number_tasks`
+--
+ALTER TABLE `number_tasks`
+  ADD CONSTRAINT `number_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `text_tasks`
+--
+ALTER TABLE `text_tasks`
+  ADD CONSTRAINT `text_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tokens`
