@@ -88,6 +88,34 @@ export default function Layout() {
       }
     }
   }
+
+  const getGames = async () => {
+    let api = new DefaultApi();
+    try {
+      const response = await api.searchForGameNameSearchForGameNamePost("Wyjście z domu", "id", 0);
+
+      console.log("API response:", response);
+
+      if (response?.data) {
+        return response.data;
+        console.log("API response:", response.data);
+      } else {
+        Alert.alert("Błąd pobierania gier", "Brak danych w odpowiedzi.");
+        return [];
+      }
+    } catch (error: any) {
+      console.log(error);
+      if (error?.response) {
+        Alert.alert("Błąd pobierania gier", "Sprawdź poprawność wprowadzonych danych.");
+      } else if (error?.request) {
+        Alert.alert("Błąd pobierania gier", "Brak połączenia z serwerem.");
+      } else {
+        Alert.alert("Błąd pobierania gier", "Wystąpił nieoczekiwany błąd.");
+      }
+    }  
+    return [];
+  }
+
   
   const handleSignOut = async () => {
     await AsyncStorage.removeItem('token');
@@ -104,7 +132,7 @@ export default function Layout() {
 
   if (isLogged) {
     return (
-        <RootLayout handleSignOut={handleSignOut}/>
+        <RootLayout handleSignOut={handleSignOut} getGames={getGames}/>
     )
   }
 

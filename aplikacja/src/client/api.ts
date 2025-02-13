@@ -260,15 +260,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Login
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        logInLoginPost: async (loginUser: string, passwordUser: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        logInLoginPost: async (loginUser: string, password: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'loginUser' is not null or undefined
             assertParamExists('logInLoginPost', 'loginUser', loginUser)
-            // verify required parameter 'passwordUser' is not null or undefined
-            assertParamExists('logInLoginPost', 'passwordUser', passwordUser)
+            // verify required parameter 'password' is not null or undefined
+            assertParamExists('logInLoginPost', 'password', password)
             const localVarPath = `/login`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -285,8 +285,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['loginUser'] = loginUser;
             }
 
-            if (passwordUser !== undefined) {
-                localVarQueryParameter['passwordUser'] = passwordUser;
+            if (password !== undefined) {
+                localVarQueryParameter['password'] = password;
             }
 
 
@@ -569,7 +569,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Signup
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {string} firstName 
          * @param {string} lastName 
          * @param {string} email 
@@ -577,11 +577,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        signUpSignupPost: async (loginUser: string, passwordUser: string, firstName: string, lastName: string, email: string, phoneNumber: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        signUpSignupPost: async (loginUser: string, password: string, firstName: string, lastName: string, email: string, phoneNumber: string, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'loginUser' is not null or undefined
             assertParamExists('signUpSignupPost', 'loginUser', loginUser)
-            // verify required parameter 'passwordUser' is not null or undefined
-            assertParamExists('signUpSignupPost', 'passwordUser', passwordUser)
+            // verify required parameter 'password' is not null or undefined
+            assertParamExists('signUpSignupPost', 'password', password)
             // verify required parameter 'firstName' is not null or undefined
             assertParamExists('signUpSignupPost', 'firstName', firstName)
             // verify required parameter 'lastName' is not null or undefined
@@ -606,8 +606,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['loginUser'] = loginUser;
             }
 
-            if (passwordUser !== undefined) {
-                localVarQueryParameter['passwordUser'] = passwordUser;
+            if (password !== undefined) {
+                localVarQueryParameter['password'] = password;
             }
 
             if (firstName !== undefined) {
@@ -708,12 +708,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Login
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async logInLoginPost(loginUser: string, passwordUser: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.logInLoginPost(loginUser, passwordUser, options);
+        async logInLoginPost(loginUser: string, password: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.logInLoginPost(loginUser, password, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.logInLoginPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -809,7 +809,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Signup
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {string} firstName 
          * @param {string} lastName 
          * @param {string} email 
@@ -817,8 +817,8 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async signUpSignupPost(loginUser: string, passwordUser: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.signUpSignupPost(loginUser, passwordUser, firstName, lastName, email, phoneNumber, options);
+        async signUpSignupPost(loginUser: string, password: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.signUpSignupPost(loginUser, password, firstName, lastName, email, phoneNumber, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.signUpSignupPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -882,12 +882,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Login
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        logInLoginPost(loginUser: string, passwordUser: string, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.logInLoginPost(loginUser, passwordUser, options).then((request) => request(axios, basePath));
+        logInLoginPost(loginUser: string, password: string, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.logInLoginPost(loginUser, password, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -962,7 +962,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Signup
          * @param {string} loginUser 
-         * @param {string} passwordUser 
+         * @param {string} password 
          * @param {string} firstName 
          * @param {string} lastName 
          * @param {string} email 
@@ -970,8 +970,8 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        signUpSignupPost(loginUser: string, passwordUser: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.signUpSignupPost(loginUser, passwordUser, firstName, lastName, email, phoneNumber, options).then((request) => request(axios, basePath));
+        signUpSignupPost(loginUser: string, password: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.signUpSignupPost(loginUser, password, firstName, lastName, email, phoneNumber, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1040,13 +1040,13 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Login
      * @param {string} loginUser 
-     * @param {string} passwordUser 
+     * @param {string} password 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public logInLoginPost(loginUser: string, passwordUser: string, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).logInLoginPost(loginUser, passwordUser, options).then((request) => request(this.axios, this.basePath));
+    public logInLoginPost(loginUser: string, password: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).logInLoginPost(loginUser, password, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1134,7 +1134,7 @@ export class DefaultApi extends BaseAPI {
      * 
      * @summary Signup
      * @param {string} loginUser 
-     * @param {string} passwordUser 
+     * @param {string} password 
      * @param {string} firstName 
      * @param {string} lastName 
      * @param {string} email 
@@ -1143,8 +1143,8 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public signUpSignupPost(loginUser: string, passwordUser: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).signUpSignupPost(loginUser, passwordUser, firstName, lastName, email, phoneNumber, options).then((request) => request(this.axios, this.basePath));
+    public signUpSignupPost(loginUser: string, password: string, firstName: string, lastName: string, email: string, phoneNumber: string, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).signUpSignupPost(loginUser, password, firstName, lastName, email, phoneNumber, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
