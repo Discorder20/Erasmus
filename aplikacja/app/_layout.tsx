@@ -94,8 +94,6 @@ export default function Layout() {
     try {
       const response = await api.searchForGameNameSearchForGameNamePost("Wyjście z domu", "id", 0);
 
-      console.log("API response:", response);
-
       if (response?.data) {
         return response.data;
         console.log("API response:", response.data);
