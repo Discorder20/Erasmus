@@ -1,76 +1,38 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-import { createDrawerNavigator } from "@react-navigation/drawer";
-import * as SplashScreen from "expo-splash-screen";
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { useFonts } from "expo-font";
-import { Image, View, Text, TouchableOpacity, StyleSheet, FlatList } from "react-native";
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { Ionicons } from "@expo/vector-icons"; // Możesz zainstalować tę bibliotekę, aby użyć ikon
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native"
+import { createDrawerNavigator } from "@react-navigation/drawer"
+import * as SplashScreen from "expo-splash-screen"
+import { StatusBar } from "expo-status-bar"
+import { useEffect } from "react"
+import "react-native-reanimated"
+import { useFonts } from "expo-font"
+import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native"
+import { useColorScheme } from "@/hooks/useColorScheme"
 
-import MyMapScreen from "./(tabs)/mapScreen";
-import InCreate from "./(tabs)/inCreate";
+import MyMapScreen from "./(tabs)/mapScreen"
+import InCreate from "./(tabs)/inCreate"
+import AllGames from "@/components/app/AllGames"
 
-SplashScreen.preventAutoHideAsync();
+SplashScreen.preventAutoHideAsync()
 
-const Drawer = createDrawerNavigator();
+const Drawer = createDrawerNavigator()
 
-export default function RootLayout({
-  handleSignOut,
-  getGames,
-}: {
-  handleSignOut: () => Promise<void>;
-  getGames: () => Promise<{ id: number; title: string; Description: string }[]>;
-}) {
-  const [games, setGames] = useState<any[]>([]);
-  const [isGamesOpen, setIsGamesOpen] = useState(false);
+export default function RootLayout({ handleSignOut, getGames }: { handleSignOut: () => Promise<void>; getGames: () => Promise<any[]> }) {
 
-  function SignOut(): React.JSX.Element {
+
+  function SignOut () : React.JSX.Element {
     handleSignOut();
-    return <View></View>;
+    return (<View></View>);
   }
 
-  const fetchGames = async () => {
-    const gamesData = await getGames();
-    setGames(gamesData);
-  };
-
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
   const drawerScreens = [
-    {
-      name: "UŻYTKOWNIK",
-      id: "User",
-      component: InCreate,
-      icon: require("@/assets/images/user.png"),
-    },
-    {
-      name: "WYSZUKAJ GRĘ",
-      id: "Find",
-      component: InCreate,
-      icon: require("@/assets/images/lupa.png"),
-    },
-    {
-      name: "OSTATNIE GRY",
-      id: "Last",
-      component: InCreate,
-      icon: require("@/assets/images/zegar.png"),
-    },
-    {
-      name: "USTAWIENIA",
-      id: "Settings",
-      component: InCreate,
-      icon: require("@/assets/images/settings.png"),
-    },
+    { name: "UŻYTKOWNIK", id: "User", component: InCreate, icon: require("@/assets/images/user.png") },
+    { name: "WYSZUKAJ GRĘ", id: "Find", component: InCreate, icon: require("@/assets/images/lupa.png") },
+    { name: "OSTATNIE GRY", id: "Last", component: InCreate, icon: require("@/assets/images/zegar.png") },
+    { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
+    { name: "WSZYSTKIE GRY", id: "AllGames", component: () => <AllGames getGames={getGames} /> },
     { name: "Mapa", id: "Map", component: MyMapScreen },
     { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
-  ];
-
-  const toggleGamesList = () => {
-    setIsGamesOpen(!isGamesOpen);
-  };
+  ]
 
   const CustomDrawerContent = (props: any) => {
     return (
@@ -85,52 +47,23 @@ export default function RootLayout({
             <Text style={styles.drawerText}>{item.name}</Text>
           </TouchableOpacity>
         ))}
-
-        <TouchableOpacity onPress={toggleGamesList} style={styles.drawerItem}>
-          <Ionicons name={isGamesOpen ? "chevron-up" : "chevron-down"} size={24} color="black" />
-          <Text style={styles.drawerText}>Wszystkie Gry</Text>
-        </TouchableOpacity>
-
-        {isGamesOpen && (
-          <FlatList
-            data={games}
-            renderItem={({ item }) => (
-              <View style={styles.gameItem}>
-                <View style={styles.gameTextContainer}>
-                  <Text style={styles.gameTitle}>{item.title}</Text>
-                  <Text style={styles.gameDescription}>
-                    {item.Description?.length > 50
-                      ? `${item.Description.substring(0, 50)}...`
-                      : item.Description || "Brak opisu"}
-                  </Text>
-                </View>
-
-                <TouchableOpacity onPress={() => console.log(`Gra: ${item.title}`)} style={styles.playButton}>
-                  <Text style={styles.playButtonText}>Graj</Text>
-                </TouchableOpacity>
-              </View>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            contentContainerStyle={styles.gameList}
-          />
-        )}
       </View>
-    );
-  };
+    )
+  }
 
-  const colorScheme = useColorScheme();
+  const colorScheme = useColorScheme()
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
-  });
+  })
 
   useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+      SplashScreen.hideAsync()
     }
-  }, [loaded]);
+  }, [loaded])
 
   if (!loaded) {
-    return null;
+    return null
   }
 
   return (
@@ -149,16 +82,14 @@ export default function RootLayout({
             name={item.name}
             component={item.component}
             options={{
-              drawerIcon: ({ color, size }) => (
-                <Image source={item.icon} style={[styles.icon, { tintColor: color }]} />
-              ),
+              drawerIcon: ({ color, size }) => <Image source={item.icon} style={[styles.icon, { tintColor: color }]} />,
             }}
           />
         ))}
       </Drawer.Navigator>
       <StatusBar />
     </ThemeProvider>
-  );
+  )
 }
 
 // Style
@@ -186,45 +117,4 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#333",
   },
-  gameList: {
-    paddingLeft: 15, // Odstęp dla listy gier
-  },
-  gameItem: {
-    marginBottom: 16,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: 16,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  gameTextContainer: {
-    flex: 1,
-  },
-  gameTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  gameDescription: {
-    fontSize: 14,
-    color: "#777",
-    marginBottom: 12,
-  },
-  playButton: {
-    backgroundColor: "#007BFF",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  playButtonText: {
-    color: "#fff",
-    fontSize: 16,
-  },
-});
+})

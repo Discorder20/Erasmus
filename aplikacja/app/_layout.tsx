@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import RootLayout from "./app/_layout"
 import LoginScreen from "@/components/app/Login"
 import RegistrationScreen from "@/components/app/Registration"
+import AllGamesScreen from "@/components/app/AllGames"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { View, ActivityIndicator, Text, SafeAreaView } from "react-native"
 import { DefaultApi } from "@/src/client"
@@ -94,9 +95,10 @@ export default function Layout() {
     try {
       const response = await api.searchForGameNameSearchForGameNamePost("Wyjście z domu", "id", 0);
 
+      console.log("API response:", response);
+
       if (response?.data) {
         return response.data;
-        console.log("API response:", response.data);
       } else {
         Alert.alert("Błąd pobierania gier", "Brak danych w odpowiedzi.");
         return [];
@@ -130,12 +132,17 @@ export default function Layout() {
 
   if (isLogged) {
     return (
-        <RootLayout handleSignOut={handleSignOut} getGames={getGames}/>
-    )
+      <>
+        <RootLayout handleSignOut={handleSignOut} getGames={getGames} />
+
+      </>
+    );
   }
 
-  return ( 
-    signPage === 'login' ? <LoginScreen handleLogin={handleLogin} handleRegistrationSwitch={handleRegisterSwitch}/> : <RegistrationScreen handleRegister={handleRegister} handleLoginSwitch={handleLoginSwitch}/>
-  )
-}
+  return (
+      signPage === 'login' ? <LoginScreen handleLogin={handleLogin} handleRegistrationSwitch={handleRegisterSwitch}/> : <RegistrationScreen handleRegister={handleRegister} handleLoginSwitch={handleLoginSwitch}/>
+    )
+
+
+  }
 
