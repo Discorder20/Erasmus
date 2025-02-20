@@ -18,18 +18,19 @@ const Drawer = createDrawerNavigator()
 
 export default function RootLayout({ handleSignOut, getGames }: { handleSignOut: () => Promise<void>; getGames: () => Promise<any[]> }) {
 
-
   function SignOut () : React.JSX.Element {
     handleSignOut();
     return (<View></View>);
   }
+
+  const ProvidedAllGames = () => <AllGames getGames={getGames} />
 
   const drawerScreens = [
     { name: "UŻYTKOWNIK", id: "User", component: InCreate, icon: require("@/assets/images/user.png") },
     { name: "WYSZUKAJ GRĘ", id: "Find", component: InCreate, icon: require("@/assets/images/lupa.png") },
     { name: "OSTATNIE GRY", id: "Last", component: InCreate, icon: require("@/assets/images/zegar.png") },
     { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
-    { name: "WSZYSTKIE GRY", id: "AllGames", component: () => <AllGames getGames={getGames} /> },
+    { name: "WSZYSTKIE GRY", id: "AllGames", component: ProvidedAllGames },
     { name: "Mapa", id: "Map", component: MyMapScreen },
     { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
   ]
@@ -43,8 +44,8 @@ export default function RootLayout({ handleSignOut, getGames }: { handleSignOut:
             onPress={() => props.navigation.navigate(item.name)}
             style={styles.drawerItem}
           >
-            <Image source={item.icon} style={styles.icon} />
-            <Text style={styles.drawerText}>{item.name}</Text>
+            <Image source={item.icon} style={{...styles.icon, backgroundColor: colorScheme === "dark" ? "white" : undefined}} />
+            <Text style={{...styles.drawerText, color: colorScheme === "dark" ? "white" : "black"}}>{item.name}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -73,7 +74,7 @@ export default function RootLayout({ handleSignOut, getGames }: { handleSignOut:
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           headerShown: true,
-          swipeEnabled: true,
+          swipeEnabled: true
         }}
       >
         {drawerScreens.map((item) => (

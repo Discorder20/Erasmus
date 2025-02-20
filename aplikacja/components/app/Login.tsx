@@ -62,12 +62,14 @@ function LoginForm({handleRegistrationSwitch, handleLogin} : {handleRegistration
       <Text style={loginStyles.subtitle}>Panel logowania</Text>
       <TextInput
         placeholder="Login"
+        placeholderTextColor="#5F5F5F"
         style={loginStyles.input}
         value={login}
         onChangeText={(text) => setLogin(text)}
       />
       <TextInput
         placeholder="Hasło"
+        placeholderTextColor="#5F5F5F"
         style={loginStyles.input}
         value={password}
         onChangeText={(text) => setPassword(text)}

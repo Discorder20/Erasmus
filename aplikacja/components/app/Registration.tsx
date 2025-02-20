@@ -70,6 +70,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Imię"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={firstName}
         onChangeText={(text) => setFirstName(text)}
@@ -77,6 +78,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Nazwisko"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={lastName}
         onChangeText={(text) => setLastName(text)}
@@ -84,6 +86,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Login"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={login}
         onChangeText={(text) => setLogin(text)}
@@ -91,6 +94,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="E-mail"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={email}
         onChangeText={(text) => setEmail(text)}
@@ -98,6 +102,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Numer telefonu"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={telephoneNumber}
         onChangeText={(text) => setTelephoneNumber(text)}
@@ -105,6 +110,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Hasło"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={password}
         onChangeText={(text) => setPassword(text)}
@@ -113,6 +119,7 @@ function RegistrationForm({handleLoginSwitch, handleRegister} : {handleLoginSwit
 
       <TextInput
         placeholder="Powtórz hasło"
+        placeholderTextColor="#5F5F5F"
         style={styles.input}
         value={rPassword}
         onChangeText={(text) => setRPassword(text)}

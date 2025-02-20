@@ -93,9 +93,10 @@ export default function Layout() {
   const getGames = async () => {
     let api = new DefaultApi();
     try {
-      const response = await api.searchForGameSearchForGameCityPost("Bielsk", "id", 0);
+      const response = await api.searchForGameNameSearchForGameNamePost("my game")
 
       console.log("API response:", response);
+      console.log("data", response.data)
 
       if (response?.data) {
         return response.data;
