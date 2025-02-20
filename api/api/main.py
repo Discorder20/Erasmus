@@ -168,7 +168,6 @@ def searchForGameTags(data : str,sort : str = "id",skip : int = 0):
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Tags.name == data).order_by(sort)
     gameData = []
     city=""
-    print(citiesData[0])
     for row in session.execute(statement):
         for cityInteger in citiesData:
             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
@@ -182,7 +181,6 @@ def searchForGameName(data : str,sort : str = "id",skip : int = 0):
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Games.title == data).order_by(sort)
     gameData = []
     city=""
-    print(citiesData[0])
     for row in session.execute(statement):
         for cityInteger in citiesData:
             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
@@ -196,7 +194,6 @@ def searchForGameAuthor(data : str,sort : str = "id",skip : int = 0):
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Users.first_name == data).order_by(sort)
     gameData = []
     city=""
-    print(citiesData[0])
     for row in session.execute(statement):
         for cityInteger in citiesData:
             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
@@ -210,7 +207,6 @@ def searchForGameDate(data : str,sort : str = "id",skip : int = 0):
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Games.creation_date == data).order_by(sort)
     gameData = []
     city=""
-    print(citiesData[0])
     for row in session.execute(statement):
         for cityInteger in citiesData:
             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
@@ -224,7 +220,6 @@ def searchForGame(data : str,sort : str = "id",skip : int = 0):
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).order_by(sort)
     gameData = []
     city=""
-    print(citiesData[0])
     for row in session.execute(statement):
         for cityInteger in citiesData:
             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
