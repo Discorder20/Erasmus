@@ -1,7 +1,7 @@
-from typing import List
+from typing import List, Optional
 
 from sqlalchemy import Column, DECIMAL, Date, DateTime, ForeignKeyConstraint, Index, String, Table, Text, text
-from sqlalchemy.dialects.mysql import INTEGER
+from sqlalchemy.dialects.mysql import INTEGER, LONGTEXT
 from sqlalchemy.orm import Mapped, declarative_base, mapped_column, relationship
 from sqlalchemy.orm.base import Mapped
 
@@ -56,6 +56,9 @@ class Games(Base):
 
     author: Mapped['Users'] = relationship('Users', back_populates='games')
     tag: Mapped['Tags'] = relationship('Tags', secondary='game_tags', back_populates='game')
+    choice_tasks: Mapped[List['ChoiceTasks']] = relationship('ChoiceTasks', uselist=True, back_populates='game')
+    number_tasks: Mapped[List['NumberTasks']] = relationship('NumberTasks', uselist=True, back_populates='game')
+    text_tasks: Mapped[List['TextTasks']] = relationship('TextTasks', uselist=True, back_populates='game')
 
 
 t_login_details = Table(
@@ -78,6 +81,25 @@ t_tokens = Table(
 )
 
 
+class ChoiceTasks(Base):
+    __tablename__ = 'choice_tasks'
+    __table_args__ = (
+        ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE', name='choice_tasks_ibfk_1'),
+        Index('game_id', 'game_id')
+    )
+
+    id = mapped_column(INTEGER(11), primary_key=True)
+    task_number = mapped_column(INTEGER(11), nullable=False)
+    points = mapped_column(INTEGER(11), nullable=False)
+    question = mapped_column(String(255), nullable=False)
+    options = mapped_column(LONGTEXT, nullable=False)
+    correct_option_index = mapped_column(INTEGER(11), nullable=False)
+    game_id = mapped_column(INTEGER(11))
+    hints = mapped_column(LONGTEXT)
+
+    game: Mapped[Optional['Games']] = relationship('Games', back_populates='choice_tasks')
+
+
 t_game_tags = Table(
     'game_tags', metadata,
     Column('game_id', INTEGER(11), primary_key=True, nullable=False),
@@ -86,3 +108,39 @@ t_game_tags = Table(
     ForeignKeyConstraint(['tag_id'], ['tags.id'], ondelete='CASCADE', name='game_tags_ibfk_2'),
     Index('game_tags_ibfk_2', 'tag_id')
 )
+
+
+class NumberTasks(Base):
+    __tablename__ = 'number_tasks'
+    __table_args__ = (
+        ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE', name='number_tasks_ibfk_1'),
+        Index('game_id', 'game_id')
+    )
+
+    id = mapped_column(INTEGER(11), primary_key=True)
+    task_number = mapped_column(INTEGER(11), nullable=False)
+    points = mapped_column(INTEGER(11), nullable=False)
+    question = mapped_column(String(255), nullable=False)
+    answer = mapped_column(INTEGER(11), nullable=False)
+    game_id = mapped_column(INTEGER(11))
+    hints = mapped_column(LONGTEXT)
+
+    game: Mapped[Optional['Games']] = relationship('Games', back_populates='number_tasks')
+
+
+class TextTasks(Base):
+    __tablename__ = 'text_tasks'
+    __table_args__ = (
+        ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE', name='text_tasks_ibfk_1'),
+        Index('game_id', 'game_id')
+    )
+
+    id = mapped_column(INTEGER(11), primary_key=True)
+    task_number = mapped_column(INTEGER(11), nullable=False)
+    points = mapped_column(INTEGER(11), nullable=False)
+    question = mapped_column(String(255), nullable=False)
+    answer = mapped_column(String(255), nullable=False)
+    game_id = mapped_column(INTEGER(11))
+    hints = mapped_column(LONGTEXT)
+
+    game: Mapped[Optional['Games']] = relationship('Games', back_populates='text_tasks')
