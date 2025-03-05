@@ -215,6 +215,8 @@ export default function AllGamesScreen({ getGames }: { getGames: () => Promise<a
                   triggerText="Start Quiz"
                   submitText="Submit Answer"
                   onCompleted={handleQuizCompleted}
+                  title={item.title}
+                  description={item.Description}
                 />
             </View>
           )}
