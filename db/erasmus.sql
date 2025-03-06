@@ -31,12 +31,18 @@ CREATE TABLE `choice_tasks` (
   `id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   `task_number` int(11) NOT NULL,
+  `coord_x` decimal(10,6) NOT NULL,
+  `coord_y` decimal(10,6) NOT NULL,
   `points` int(11) NOT NULL,
   `question` varchar(255) NOT NULL,
   `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`options`)),
   `correct_option_index` int(11) NOT NULL,
   `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+INSERT INTO `choice_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `options`, `correct_option_index`, `hints`) VALUES
+(1, 4, 5, 52.546007, 19.685939, 5, 'Co znajduje się na kopcu harcerza?', '[\"Krzyż walecznych\", \"Krzyż harcerski\", \"Krzyż Virtuti Militari\"]', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -86,7 +92,10 @@ CREATE TABLE `games` (
 INSERT INTO `games` (`id`, `author_id`, `title`, `creation_date`, `coord_x`, `coord_y`, `description`) VALUES
 (1, 2, 'Sylwester u Zduniaka', '2024-12-31', 53.066486, 21.149823, 'Impreza sylwestrowa ze wstępem wolnym dla każdego w Przytułach'),
 (2, 1, 'Rowerowe szaleństwo', '2025-01-13', 52.541332, 19.755332, 'Zapraszam wszystkich zainteresowanych do wspólnych szaleństw na Pump Tracku. Wszyscy mile widziani.'),
-(3, 3, 'Wyjście z domu', '2025-01-16', 52.559106, 19.695203, 'Organizuję wyjście po zajęciach lekcyjnych na kebaba. Inicjatywa ma na celu integrację z innymi osobami zamiast przesiadywania w domu i grania na komputerze.');
+(3, 3, 'Wyjście z domu', '2025-01-16', 52.559106, 19.695203, 'Organizuję wyjście po zajęciach lekcyjnych na kebaba. Inicjatywa ma na celu integrację z innymi osobami zamiast przesiadywania w domu i grania na komputerze.'),
+(4, 2, 'Sakralna Strona Miasta', '2025-02-14', 52.545007, 19.684939, 'Ta trasa poprowadzi Cię przez duchowe serce Płocka, odkrywając zarówno wielowiekowe świątynie, jak i miejsca pamięci związane z religijną historią miasta. Spacerując wśród zabytkowych budowli, poznasz losy społeczności, które na przestrzeni wieków kształtowały duchowy charakter Płocka. Wędrówka obejmie również punkty upamiętniające ważne postaci i wydarzenia, a także symboliczne miejsca, które do dziś przyciągają pielgrzymów i mieszkańców szukających chwili zadumy.'),
+(5, 2, 'Płock uszyty sztuką', '2025-02-14', 52.545007, 19.684939, 'Miasto, w którym historia splata się ze sztuką, odkryje przed Tobą swoje najbardziej malownicze i inspirujące zakątki. Podczas tej gry terenowej odnajdziesz ślady znanych twórców, poznasz miejsca, które stały się tłem dla filmowych opowieści, oraz napotkasz oryginalne instalacje artystyczne. Spacerując wzdłuż malowniczych krajobrazów i uliczek, zobaczysz, jak różnorodne formy sztuki wpisują się w przestrzeń miejską, tworząc unikalną atmosferę.'),
+(6, 2, 'Historyczne oblicze Płocka', '2025-02-14', 52.545007, 19.684939, 'Przenieś się w czasie i poznaj miejsca, które były świadkami kluczowych wydarzeń w dziejach miasta. Trasa poprowadzi Cię śladami dawnych fortyfikacji, miejsc pamięci oraz budowli, które przez wieki odgrywały istotną rolę w życiu mieszkańców. Spacerując ulicami Płocka, odkryjesz historie ludzi, którzy walczyli o wolność, tworzyli i bronili miasta, a także zobaczysz ślady dawnych epok, które do dziś kształtują jego niepowtarzalny charakter.');
 
 -- --------------------------------------------------------
 
@@ -130,9 +139,10 @@ CREATE TABLE `login_details` (
 --
 
 INSERT INTO `login_details` (`id`, `login`, `password`) VALUES
-(1, 'wiktor', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'),
-(2, 'filip', 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35'),
-(3, 'pawel', '4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce');
+(1, 'wiktor', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Indpa3RvciJ9.URzz158aZAyZv_ReAfAUxLhhFfWJgl7u03gldB40AQdbHwjdazMQC6XlpY7yjnc0OLSbspi9FEjLSGjE_nuWMkXIoGCnJrwDO110yjhtWuRFzGUW3ZCIULlLCRXymBEjwwDHjT07dz_lB9RedOdPnh7dq1hBsP3N0ugaSYRA5Z4'),
+(2, 'filip', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImZpbGlwIn0.JpTlkX-eIGR5Qawg7_F2gx_4WyrqWkTDkeD3pbD6wWhlq17XSiqXI09GZMgINc-TYGZdJ28cWUMMYrmObV0eRlbhY6J4hgXm9zfI7iY240lKRQ6gNiNFeXEAzC0Dl97U_8DSF_3H192RAGJimIjfbfwBaY0hiCBt6Up3P6gACGU'),
+(3, 'pawel', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InBhd2VsIn0.AtkIkvVJWjFOScd2dcOy53MqU_hCaY6K5iWPcauACN20che83s2-7jF_20lOoH5ZjwXBdvov5MeLoOgqFd-wWGgVvPJATPOPits6XsRaN2ms6GdZ7Unbx1JV22Q_i7DgGBKCBUySJq6cPGhPkZ7DmYfCPHjhKTwSj4ecaEUiIYQ');
+
 
 -- --------------------------------------------------------
 
@@ -144,11 +154,17 @@ CREATE TABLE `number_tasks` (
   `id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   `task_number` int(11) NOT NULL,
+  `coord_x` decimal(10,6) NOT NULL,
+  `coord_y` decimal(10,6) NOT NULL,
   `points` int(11) NOT NULL,
   `question` varchar(255) NOT NULL,
   `answer` int(11) NOT NULL,
   `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+INSERT INTO `number_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
+(3, 6, 1, 52.546007, 19.685939, 5, 'Ile lwów znajduje się przed ratuszem?', 2, NULL),
+(4, 5, 2, 52.545007, 19.684939, 5, 'Ile postaci przedstawia mural nad murami?', 4, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,15 +199,23 @@ INSERT INTO `tags` (`id`, `name`) VALUES
 -- Struktura tabeli dla tabeli `text_tasks`
 --
 
+
 CREATE TABLE `text_tasks` (
   `id` int(11) NOT NULL,
   `game_id` int(11) DEFAULT NULL,
   `task_number` int(11) NOT NULL,
+  `coord_x` decimal(10,6) NOT NULL,
+  `coord_y` decimal(10,6) NOT NULL,
   `points` int(11) NOT NULL,
   `question` varchar(255) NOT NULL,
   `answer` varchar(255) NOT NULL,
   `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+INSERT INTO `text_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
+(1, 4, 3, 52.545007, 19.684939, 5, 'Wpisz fragment tekstu na pomniku Broniewskiego', 'Z górskiej spoglądam na królewski las', NULL),
+(2, 6, 4, 52.546007, 19.685939, 5, 'Podaj trzy istotne słowa związane z Placem Trzynastu Straconych', 'chleb, pokój, wolność', NULL);
 
 -- --------------------------------------------------------
 
