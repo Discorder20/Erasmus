@@ -183,6 +183,10 @@ def addNewGame(userToken : str, title : str, coordX : float, coordY : float, des
 def searchForGame(tag : str = "", name : str = "", author : str = "", date : str = "", city : str = "", sort : str = "id", skip : int = 0):
     tasks = []
     tags = []
+    citiesData = getCities()
+    cityVal = ""
+    gameData = []
+    minLength = 0
     criteria = [(Games.title, name), (Users.first_name, author), (Games.creation_date, date)]
 
     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Users.first_name).join(Users,  Games.author_id == Users.id)
@@ -195,6 +199,15 @@ def searchForGame(tag : str = "", name : str = "", author : str = "", date : str
 
     statementTextTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name,  TextTasks.task_number, TextTasks.coord_x, TextTasks.coord_y, TextTasks.points, TextTasks.question, TextTasks.answer, TextTasks.hints).join(Users,  Games.author_id == Users.id).join(TextTasks, TextTasks.game_id == Games.id)
 
+    for crit in criteria:
+        col, val = crit
+        if val != "":
+            statement = statement.where(col == val)
+            statementTags = statementTags.where(col == val)
+            statementChoiceTasks = statementChoiceTasks.where(col == val)
+            statementNumberTasks = statementNumberTasks.where(col == val)
+            statementTextTasks = statementTextTasks.where(col == val)
+            
     for rowChoiceTasks in engine.connect().execute(statementChoiceTasks):
         tasks.append({"Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
 
@@ -207,18 +220,6 @@ def searchForGame(tag : str = "", name : str = "", author : str = "", date : str
     for rowTags in engine.connect().execute(statementTags):
         tags.append({"id":rowTags.id,"name":rowTags.name})
 
-    citiesData = getCities()
-    cityVal = ""
-    gameData = []
-    minLength = 0
-    for crit in criteria:
-        col, val = crit
-        if val != "":
-            statement = statement.where(col == val)
-            statementTags = statementTags.where(col == val)
-            statementChoiceTasks = statementChoiceTasks.where(col == val)
-            statementNumberTasks = statementNumberTasks.where(col == val)
-            statementTextTasks = statementTextTasks.where(col == val)
     for row in session.execute(statement):
         gameTasks = []
         gameTags = []
