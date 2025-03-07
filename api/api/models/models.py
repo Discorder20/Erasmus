@@ -90,6 +90,8 @@ class ChoiceTasks(Base):
 
     id = mapped_column(INTEGER(11), primary_key=True)
     task_number = mapped_column(INTEGER(11), nullable=False)
+    coord_x = mapped_column(DECIMAL(10, 6), nullable=False)
+    coord_y = mapped_column(DECIMAL(10, 6), nullable=False)
     points = mapped_column(INTEGER(11), nullable=False)
     question = mapped_column(String(255), nullable=False)
     options = mapped_column(LONGTEXT, nullable=False)
@@ -119,6 +121,8 @@ class NumberTasks(Base):
 
     id = mapped_column(INTEGER(11), primary_key=True)
     task_number = mapped_column(INTEGER(11), nullable=False)
+    coord_x = mapped_column(DECIMAL(10, 6), nullable=False)
+    coord_y = mapped_column(DECIMAL(10, 6), nullable=False)
     points = mapped_column(INTEGER(11), nullable=False)
     question = mapped_column(String(255), nullable=False)
     answer = mapped_column(INTEGER(11), nullable=False)
@@ -137,6 +141,8 @@ class TextTasks(Base):
 
     id = mapped_column(INTEGER(11), primary_key=True)
     task_number = mapped_column(INTEGER(11), nullable=False)
+    coord_x = mapped_column(DECIMAL(10, 6), nullable=False)
+    coord_y = mapped_column(DECIMAL(10, 6), nullable=False)
     points = mapped_column(INTEGER(11), nullable=False)
     question = mapped_column(String(255), nullable=False)
     answer = mapped_column(String(255), nullable=False)

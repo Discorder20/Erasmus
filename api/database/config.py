@@ -13,7 +13,7 @@ url_object = URL.create(
 )
 
 
-engine = create_engine(url_object)
+engine = create_engine(url_object, pool_size=100, max_overflow=0)
 
 Session = sessionmaker(engine)
 
