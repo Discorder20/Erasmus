@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
 import * as SplashScreen from "expo-splash-screen";
-import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert, TextInput } from "react-native";
+import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import { useFonts } from "expo-font";
 import Quiz, {type Question} from "../quiz";
-import RNPickerSelect from 'react-native-picker-select';
-import _ from 'lodash';
-import { useCallback } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const questions: Question[] = [
   {
@@ -162,93 +160,72 @@ const handleQuizCompleted = (duration: number) => {
   // You can add more logic here, such as sending the result to a server
 }
 
-export default function AllGamesScreen({ getGames, getCities, getTags }: { getGames: (filters: { tag?: string; name?: string; author?: string; date?: string; city?: string; sort?: string; skip?: number; }) => Promise<any[]>; getCities: () => Promise<any[]>; getTags: () => Promise<any[]> }) {
+export default function AllGamesScreen() {
   const [loaded] = useFonts({
     SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
   });
   const [games, setGames] = useState<any[]>([]);
-  const [cities, setCities] = useState<any[]>([]);
-  const [tags, setTags] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filtersVisible, setFiltersVisible] = useState(false);
-  const [filters, setFilters] = useState({
-      tag: undefined,
-      name: undefined,
-      author: undefined,
-      date: undefined,
-      city: undefined,
-      sort: undefined,
-  });
 
   const fetchGames = async () => {
-        setLoading(true);
-        try {
-            console.log("Aktualne filtry:", filters);
-            const gamesData = await getGames(filters);
-            console.log("Pobrane gry:", gamesData);
-            setGames(gamesData);
-        } catch (error) {
-            console.error("Błąd pobierania gier:", error);
-            Alert.alert("Błąd", "Nie udało się pobrać listy gier.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-  const fetchCities = async () => {
-      try {
-          const citiesData = await getCities();
-          console.log("Pobrane miasta:", citiesData);
-          setCities(citiesData);
-      } catch (error) {
-          console.error("Błąd pobierania miast:", error);
-          Alert.alert("Błąd", "Nie udało się pobrać listy miast.");
-      }
+    setLoading(true);
+    try {
+      const storedGames = await AsyncStorage.getItem("games");
+      const gamesData = storedGames ? JSON.parse(storedGames) : [];
+      setGames(gamesData);
+    } catch (error) {
+      console.error("Błąd pobierania gier z AsyncStorage:", error);
+      Alert.alert("Błąd", "Nie udało się załadować gier.");
+    } finally {
+      setLoading(false);
+    }
   };
-
-  const fetchTags = async () => {
-      try {
-          const tagsData = await getTags();
-          console.log("Pobrane tagi:", tagsData);
-          setTags(tagsData);
-      } catch (error) {
-          console.error("Błąd pobierania tagów:", error);
-          Alert.alert("Błąd", "Nie udało się pobrać listy tagów.");
-      }
-  };
-
-  const handleInputChange = useCallback(
-    _.debounce((field, value) => {
-      setFilters(prev => ({ ...prev, [field]: value }));
-    }, 1000),
-    []
-  );
-
-//   useEffect(() => {
-//     if (loaded) {
-//       SplashScreen.hideAsync();
-//     }
-//     fetchGames();
-//     fetchCities();
-//     fetchTags();
-//   }, [filters, loaded]);
 
   useEffect(() => {
+    const initializeApp = async () => {
       if (loaded) {
-        SplashScreen.hideAsync();
+        await SplashScreen.hideAsync();
       }
 
-      const fetchData = async () => {
-        await Promise.all([fetchCities(), fetchTags()]);
-        fetchGames();
-      };
+      try {
+        const storedGames = await AsyncStorage.getItem("games");
+        if (!storedGames) {
+          const initialGames = [
+            {
+              id: 1,
+              title: "Sylwester u Zduniaka",
+              City: "Gąbin",
+              DateOfCreation: "2024-12-31",
+              Description: "Impreza sylwestrowa ze wstępem wolnym dla każdego w Przytułach",
+              Tag: "",
+              Tags: ["Zabawa", "Ciekawe", "Nie zdrowe"],
+              Tasks: [],
+              User: "Filip",
+            },
+            {
+              id: 2,
+              title: "Rowerowe szaleństwo",
+              City: "Gąbin",
+              DateOfCreation: "2025-01-13",
+              Description: "Zapraszam wszystkich zainteresowanych do wspólnych szaleństw na Pump Tracku. Wszyscy mile widziani.",
+              Tag: "",
+              Tags: ["Sport", "Dla każdego", "Wyczynowe"],
+              Tasks: [],
+              User: "Wiktor",
+            },
+          ];
+          await AsyncStorage.setItem("games", JSON.stringify(initialGames));
+        }
+      } catch (error) {
+        console.error("Błąd zapisu gier do AsyncStorage:", error);
+      }
 
-      fetchData();
-    }, [loaded]);
+      fetchGames();
+    };
 
-    useEffect(() => {
-        fetchGames();
-    }, [filters]);
+    initializeApp();
+  }, [loaded]);
+
 
   if (loading) {
     return (
@@ -260,63 +237,8 @@ export default function AllGamesScreen({ getGames, getCities, getTags }: { getGa
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => setFiltersVisible(!filtersVisible)} style={styles.toggleButton}>
-        <Text style={styles.toggleButtonText}>{filtersVisible ? "Ukryj filtry" : "Pokaż filtry"}</Text>
-      </TouchableOpacity>
-      {filtersVisible && (
-        <View style={styles.filterSection}>
-
-          <RNPickerSelect
-            placeholder={{ label: "Wybierz tag", value: null }}
-            onValueChange={(value) => setFilters(prev => ({ ...prev, tag: value }))}
-            items={tags.length > 0 ? tags.map(tag => ({ label: tag.name, value: tag.name })) : [{ label: "Brak dostępnych tagów", value: null }]}
-            value={filters.tag}
-          />
-
-          <TextInput
-            placeholder="Wpisz nazwę"
-            value={filters.name}
-            onChangeText={(value) => handleInputChange("name", value)}
-            style={styles.input}
-          />
-
-          <TextInput
-            placeholder="Wpisz autora"
-            value={filters.author}
-            onChangeText={(value) => handleInputChange("author", value)}
-            style={styles.input}
-          />
-
-          <TextInput
-            placeholder="Wpisz datę(rrrr-mm-dd)"
-            value={filters.date}
-            onChangeText={(value) => handleInputChange("date", value)}
-            style={styles.input}
-          />
-
-          <RNPickerSelect
-            placeholder={{ label: "Wybierz miasto", value: null }}
-            onValueChange={(value) => setFilters(prev => ({ ...prev, city: value }))}
-            items={cities.length > 0 ? cities.map(city => ({ label: city.name, value: city.name })) : [{ label: "Brak dostępnych miast", value: null }]}
-            value={filters.city}
-          />
-
-          <RNPickerSelect
-                      placeholder={{ label: "Wybierz sposób sortowania", value: null }}
-                      onValueChange={(value) => setFilters(prev => ({ ...prev, sort: value }))}
-                      items={[
-                        { label: "Tag", value: "tag" },
-                        { label: "Nazwa", value: "name" },
-                        { label: "Autor", value: "author" },
-                        { label: "Data", value: "date" },
-                        { label: "Miasto", value: "city" }
-                      ]}
-                      value={filters.sort}
-                    />
-        </View>
-      )}
       {games.length === 0 ? (
-          <Text>Brak gier do wyświetlenia</Text>
+        <Text>Brak gier do wyświetlenia</Text>
       ) : (
         <FlatList
           data={games}
@@ -324,7 +246,11 @@ export default function AllGamesScreen({ getGames, getCities, getTags }: { getGa
             <View style={styles.gameItem}>
               <View style={styles.gameTextContainer}>
                 <Text style={styles.gameTitle}>{item.title}</Text>
-                <Text style={styles.gameDescription}>{item.Description?.length > 70 ? `${item.Description.substring(0, 70)}...` : item.Description || "Brak opisu"}</Text>
+                <Text style={styles.gameDescription}>
+                  {item.Description?.length > 70
+                    ? `${item.Description.substring(0, 70)}...`
+                    : item.Description || "Brak opisu"}
+                </Text>
               </View>
                 <Quiz
                   questions={questions}
@@ -336,7 +262,7 @@ export default function AllGamesScreen({ getGames, getCities, getTags }: { getGa
                 />
             </View>
           )}
-          keyExtractor={(item, index) => (item.id ? item.id.toString() : `game-${index}`)}
+          keyExtractor={(item) => item.id.toString()}
         />
       )}
     </View>
@@ -347,27 +273,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-  },
-  toggleButton: {
-    padding: 10,
-    backgroundColor: "#007BFF",
-    borderRadius: 5,
-    marginBottom: 10
-  },
-  toggleButtonText: {
-    color: "#fff",
-    textAlign: "center",
-    fontWeight: "bold"
-  },
-  filterSection: {
-    marginBottom: 20
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 5,
-    padding: 10,
-    marginVertical: 5,
   },
   gameItem: {
     flexDirection: 'row',
