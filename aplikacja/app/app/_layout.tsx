@@ -16,23 +16,35 @@ SplashScreen.preventAutoHideAsync()
 
 const Drawer = createDrawerNavigator()
 
+<<<<<<< HEAD
 export default function RootLayout({ handleSignOut, getGames }: { handleSignOut: () => Promise<void>; getGames: () => Promise<any[]> }) {
+=======
+export default function RootLayout({ handleSignOut, getGames, getCities, getTags }: { handleSignOut: () => Promise<void>; getGames: () => Promise<any[]>; getCities: () => Promise<any[]>; getTags: () => Promise<any[]>;}) {
+>>>>>>> 41cbaf1 (Adding filtering and sorting of games)
 
   function SignOut () : React.JSX.Element {
     handleSignOut();
     return (<View></View>);
   }
 
+<<<<<<< HEAD
   const ProvidedAllGames = () => <AllGames getGames={getGames} />
+=======
+  const ProvidedAllGames = () => <AllGames getGames={getGames} getCities={getCities} getTags={getTags}/>
+>>>>>>> 41cbaf1 (Adding filtering and sorting of games)
 
   const drawerScreens = [
-    { name: "UŻYTKOWNIK", id: "User", component: InCreate, icon: require("@/assets/images/user.png") },
-    { name: "WYSZUKAJ GRĘ", id: "Find", component: InCreate, icon: require("@/assets/images/lupa.png") },
+//     { name: "UŻYTKOWNIK", id: "User", component: InCreate, icon: require("@/assets/images/user.png") },
+//     { name: "WYSZUKAJ GRĘ", id: "Find", component: InCreate, icon: require("@/assets/images/lupa.png") },
     { name: "OSTATNIE GRY", id: "Last", component: InCreate, icon: require("@/assets/images/zegar.png") },
+<<<<<<< HEAD
     { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
+=======
+//     { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
+>>>>>>> 41cbaf1 (Adding filtering and sorting of games)
     { name: "WSZYSTKIE GRY", id: "AllGames", component: ProvidedAllGames },
     { name: "Mapa", id: "Map", component: MyMapScreen },
-    { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
+//     { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
   ]
 
   const CustomDrawerContent = (props: any) => {

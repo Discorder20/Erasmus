@@ -2,6 +2,7 @@ from fastapi import *
 from pydantic import *
 from jwt import *
 from datetime import *
+from math import *
 
 from sqlalchemy import *
 from sqlalchemy.orm import Session
@@ -35,6 +36,21 @@ def getUser(idUser : int):
             detail="User not found",
         )
 
+@app.post('/tags')
+def getTags(skip : int = 0):
+    statement = select(Tags)
+    tagsData = []
+    for row in session.execute(statement):
+        tagsData.append({"id" : row.Tags.id, "name" : row.Tags.name})
+    return tagsData[skip : skip+len(tagsData)]
+
+@app.post("/cities")
+def getCities(skip : int = 0):
+    statement = select(Cities)
+    citiesData = []
+    for row in session.execute(statement):
+        citiesData.append({"id" : row.Cities.id, "name" : row.Cities.name, "coordX" : row.Cities.coord_x, "coordY" : row.Cities.coord_y})
+    return citiesData[skip : skip+len(citiesData)]
 
 
 @app.post("/signup")
@@ -137,8 +153,9 @@ def logInByToken(userToken : str):
         )
 
 @app.post("/addNewGame")
-def addNewGame(userToken : str, title : str, coordX : float, coordY : float, description : str, tag : int):
+def addNewGame(userToken : str, title : str, coordX : float, coordY : float, description : str, tag : list[str]):
     idGame = 1
+    actualTag = 0
     statement = select(Games)
     for row in session.execute(statement):
         idGame += 1
@@ -147,26 +164,29 @@ def addNewGame(userToken : str, title : str, coordX : float, coordY : float, des
         insertStatement = insert(Games).values(id = idGame, author_id = userData["id"], title = title, creation_date = datetime.date(datetime.now()), coord_x = coordX, coord_y = coordY, description = description)
         result = conn.execute(insertStatement)
         conn.commit()
-        insertStatement = insert(t_game_tags).values(game_id = idGame,tag_id = tag)
-        result = conn.execute(insertStatement)
-        conn.commit()
+        tags = getTags()
+        for i in tags:
+            if i["name"] == tag[actualTag]:
+                insertStatement = insert(t_game_tags).values(game_id = idGame,tag_id = i["id"])
+                result = conn.execute(insertStatement)
+                conn.commit()
+                if actualTag < len(tag) - 1:
+                    actualTag+=1
+        
         raise HTTPException(
             status_code=status.HTTP_201_CREATED,
             detail="New game created",
         )
-@app.post("/getCities")
-def getCities(skip : int = 0):
-    statement = select(Cities)
-    citiesData = []
-    for row in session.execute(statement):
-        citiesData.append({"id" : row.Cities.id, "name" : row.Cities.name, "coordX" : row.Cities.coord_x, "coordY" : row.Cities.coord_y})
-    return citiesData[skip : skip+len(citiesData)]
 
-@app.post("/searchForGameTags")
-def searchForGameTags(data : str,sort : str = "id",skip : int = 0):
+
+@app.post("/searchForGame")
+def searchForGame(tag : str = "", name : str = "", author : str = "", date : str = "", city : str = "", sort : str = "id", skip : int = 0):
+    tasks = []
+    tags = []
     citiesData = getCities()
-    statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Tags.name == data).order_by(sort)
+    cityVal = ""
     gameData = []
+<<<<<<< HEAD
     city=""
     for row in session.execute(statement):
         for cityInteger in citiesData:
@@ -227,4 +247,139 @@ def searchForGame(data : str,sort : str = "id",skip : int = 0):
         if(city == data):
             gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
     return gameData[skip : skip+len(gameData)]
+=======
+    minLength = 0
+    criteria = [(Games.title, name), (Users.first_name, author), (Games.creation_date, date)]
 
+    statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Users.first_name).join(Users,  Games.author_id == Users.id)
+
+    statementTags = select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id)
+
+    statementChoiceTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name, ChoiceTasks.task_number, ChoiceTasks.coord_x, ChoiceTasks.coord_y, ChoiceTasks.points, ChoiceTasks.question, ChoiceTasks.options, ChoiceTasks.correct_option_index, ChoiceTasks.hints).join(Users,  Games.author_id == Users.id).join(ChoiceTasks, ChoiceTasks.game_id == Games.id)
+
+    statementNumberTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name,  NumberTasks.task_number, NumberTasks.coord_x, NumberTasks.coord_y, NumberTasks.points, NumberTasks.question, NumberTasks.answer, NumberTasks.hints).join(Users,  Games.author_id == Users.id).join(NumberTasks, NumberTasks.game_id == Games.id)
+>>>>>>> 41cbaf1 (Adding filtering and sorting of games)
+
+    statementTextTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name,  TextTasks.task_number, TextTasks.coord_x, TextTasks.coord_y, TextTasks.points, TextTasks.question, TextTasks.answer, TextTasks.hints).join(Users,  Games.author_id == Users.id).join(TextTasks, TextTasks.game_id == Games.id)
+
+    for crit in criteria:
+        col, val = crit
+        if val != "":
+            statement = statement.where(col == val)
+            statementTags = statementTags.where(col == val)
+            statementChoiceTasks = statementChoiceTasks.where(col == val)
+            statementNumberTasks = statementNumberTasks.where(col == val)
+            statementTextTasks = statementTextTasks.where(col == val)
+            
+    for rowChoiceTasks in engine.connect().execute(statementChoiceTasks):
+        tasks.append({"Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
+
+    for rowNumberTasks in engine.connect().execute(statementNumberTasks):
+        tasks.append({"Game Id": rowNumberTasks.id, "Task Number":rowNumberTasks.task_number, "CoordX" : rowNumberTasks.coord_x, "CoordY" : rowNumberTasks.coord_y, "Points" : rowNumberTasks.points, "Question" : rowNumberTasks.question, "Answer" : rowNumberTasks.answer, "Hints" : rowNumberTasks.hints})
+
+    for rowTextTasks in engine.connect().execute(statementTextTasks):
+        tasks.append({"Game Id": rowTextTasks.id,"Task Number":rowTextTasks.task_number, "CoordX" : rowTextTasks.coord_x, "CoordY" : rowTextTasks.coord_y, "Points" : rowTextTasks.points, "Question" : rowTextTasks.question, "Answer" : rowTextTasks.answer, "Hints" : rowTextTasks.hints})
+    
+    for rowTags in engine.connect().execute(statementTags):
+        tags.append({"id":rowTags.id,"name":rowTags.name})
+
+    for row in session.execute(statement):
+        gameTasks = []
+        gameTags = []
+
+        for cityInteger in citiesData:
+            length =  sqrt(pow(float(cityInteger["coordX"]) - float(row.coord_x),2) + pow(float(cityInteger["coordX"]) - float(row.coord_y),2))
+            if minLength == 0:
+                minLength = length
+                cityVal=cityInteger["name"]
+            elif minLength > length:
+                minLength = length
+                cityVal=cityInteger["name"]
+
+        for rowTags in tags:
+            if rowTags["id"] == row.id:
+                gameTags.append(rowTags["name"]) 
+        for rowTasks in tasks:
+            if rowTasks["Game Id"] == row.id:
+                gameTasks.append(rowTasks)
+
+        if city != "" or tag != "":
+            if city == cityVal:
+                gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tags":gameTags, "City":cityVal,"User":row.first_name,"Tasks" : gameTasks})
+            elif tag in gameTags:
+                gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tags":gameTags, "City":cityVal,"User":row.first_name,"Tasks" : gameTasks})
+        else:
+            gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tags":gameTags, "City":cityVal,"User":row.first_name,"Tasks" :  gameTasks})
+    return gameData[skip : skip+len(gameData)]    
+
+
+# @app.post("/searchForGameTags")
+# def searchForGameTags(data : str,sort : str = "id",skip : int = 0):
+#     citiesData = getCities()
+#     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Tags.name == data).order_by(sort)
+#     gameData = []
+#     city=""
+#     print(citiesData[0])
+#     for row in session.execute(statement):
+#         for cityInteger in citiesData:
+#             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
+#                 city=cityInteger["name"]
+#         gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
+#     return gameData[skip : skip+len(gameData)]
+
+# @app.post("/searchForGameName")
+# def searchForGameName(data : str,sort : str = "id",skip : int = 0):
+#     citiesData = getCities()
+#     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Games.title == data).order_by(sort)
+#     gameData = []
+#     city=""
+#     print(citiesData[0])
+#     for row in session.execute(statement):
+#         for cityInteger in citiesData:
+#             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
+#                 city=cityInteger["name"]
+#         gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
+#     return gameData[skip : skip+len(gameData)]
+
+# @app.post("/searchForGameAuthor")
+# def searchForGameAuthor(data : str,sort : str = "id",skip : int = 0):
+#     citiesData = getCities()
+#     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Users.first_name == data).order_by(sort)
+#     gameData = []
+#     city=""
+#     print(citiesData[0])
+#     for row in session.execute(statement):
+#         for cityInteger in citiesData:
+#             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
+#                 city=cityInteger["name"]
+#         gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
+#     return gameData[skip : skip+len(gameData)]
+
+# @app.post("/searchForGameDate")
+# def searchForGameDate(data : str,sort : str = "id",skip : int = 0):
+#     citiesData = getCities()
+#     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).where(Games.creation_date == data).order_by(sort)
+#     gameData = []
+#     city=""
+#     print(citiesData[0])
+#     for row in session.execute(statement):
+#         for cityInteger in citiesData:
+#             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
+#                 city=cityInteger["name"]
+#         gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
+#     return gameData[skip : skip+len(gameData)]
+
+# @app.post("/searchForGameCity")
+# def searchForGame(data : str,sort : str = "id",skip : int = 0):
+#     citiesData = getCities()
+#     statement= select(Games.id, Games.title, Games.creation_date, Games.coord_x, Games.coord_y, Games.description, Tags.name, Users.first_name).join(t_game_tags, Games.id == t_game_tags.c.game_id).join(Tags, t_game_tags.c.tag_id == Tags.id).join(Users,  Games.author_id == Users.id).order_by(sort)
+#     gameData = []
+#     city=""
+#     print(citiesData[0])
+#     for row in session.execute(statement):
+#         for cityInteger in citiesData:
+#             if(float(cityInteger["coordX"]) - 100.0 <= float(row.coord_x) and float(cityInteger["coordX"]) + 100.0 >= float(row.coord_x) and float(cityInteger["coordY"]) - 100.0 <= float(row.coord_y) and float(cityInteger["coordY"]) + 100.0 >= float(row.coord_y)):
+#                 city=cityInteger["name"]
+#         if(city == data):
+#             gameData.append({"id" : row.id, "title" : row.title, "DateOfCreation" : row.creation_date, "Description" : row.description, "Tag":row.name, "City":city,"User":row.first_name})
+#     return gameData[skip : skip+len(gameData)]

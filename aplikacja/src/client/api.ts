@@ -83,11 +83,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {number} coordX 
          * @param {number} coordY 
          * @param {string} description 
-         * @param {number} tag 
+         * @param {Array<string>} requestBody 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addNewGameAddNewGamePost: async (userToken: string, title: string, coordX: number, coordY: number, description: string, tag: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        addNewGameAddNewGamePost: async (userToken: string, title: string, coordX: number, coordY: number, description: string, requestBody: Array<string>, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'userToken' is not null or undefined
             assertParamExists('addNewGameAddNewGamePost', 'userToken', userToken)
             // verify required parameter 'title' is not null or undefined
@@ -98,8 +98,8 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             assertParamExists('addNewGameAddNewGamePost', 'coordY', coordY)
             // verify required parameter 'description' is not null or undefined
             assertParamExists('addNewGameAddNewGamePost', 'description', description)
-            // verify required parameter 'tag' is not null or undefined
-            assertParamExists('addNewGameAddNewGamePost', 'tag', tag)
+            // verify required parameter 'requestBody' is not null or undefined
+            assertParamExists('addNewGameAddNewGamePost', 'requestBody', requestBody)
             const localVarPath = `/addNewGame`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -132,8 +132,42 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
                 localVarQueryParameter['description'] = description;
             }
 
-            if (tag !== undefined) {
-                localVarQueryParameter['tag'] = tag;
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(requestBody, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Getcities
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getCitiesCitiesPost: async (skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/cities`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            if (skip !== undefined) {
+                localVarQueryParameter['skip'] = skip;
             }
 
 
@@ -149,13 +183,13 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Getcities
+         * @summary Gettags
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCitiesGetCitiesPost: async (skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            const localVarPath = `/getCities`;
+        getTagsTagsPost: async (skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/tags`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -332,158 +366,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Searchforgameauthor
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameAuthorSearchForGameAuthorPost: async (data: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('searchForGameAuthorSearchForGameAuthorPost', 'data', data)
-            const localVarPath = `/searchForGameAuthor`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (data !== undefined) {
-                localVarQueryParameter['data'] = data;
-            }
-
-            if (sort !== undefined) {
-                localVarQueryParameter['sort'] = sort;
-            }
-
-            if (skip !== undefined) {
-                localVarQueryParameter['skip'] = skip;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Searchforgamedate
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameDateSearchForGameDatePost: async (data: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('searchForGameDateSearchForGameDatePost', 'data', data)
-            const localVarPath = `/searchForGameDate`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (data !== undefined) {
-                localVarQueryParameter['data'] = data;
-            }
-
-            if (sort !== undefined) {
-                localVarQueryParameter['sort'] = sort;
-            }
-
-            if (skip !== undefined) {
-                localVarQueryParameter['skip'] = skip;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Searchforgamename
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameNameSearchForGameNamePost: async (data: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('searchForGameNameSearchForGameNamePost', 'data', data)
-            const localVarPath = `/searchForGameName`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (data !== undefined) {
-                localVarQueryParameter['data'] = data;
-            }
-
-            if (sort !== undefined) {
-                localVarQueryParameter['sort'] = sort;
-            }
-
-            if (skip !== undefined) {
-                localVarQueryParameter['skip'] = skip;
-            }
-
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
          * @summary Searchforgame
-         * @param {string} data 
+         * @param {string} [tag] 
+         * @param {string} [name] 
+         * @param {string} [author] 
+         * @param {string} [date] 
+         * @param {string} [city] 
          * @param {string} [sort] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchForGameSearchForGameCityPost: async (data: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('searchForGameSearchForGameCityPost', 'data', data)
-            const localVarPath = `/searchForGameCity`;
+        searchForGameSearchForGamePost: async (tag?: string, name?: string, author?: string, date?: string, city?: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/searchForGame`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -495,55 +390,24 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
-            if (data !== undefined) {
-                localVarQueryParameter['data'] = data;
+            if (tag !== undefined) {
+                localVarQueryParameter['tag'] = tag;
             }
 
-            if (sort !== undefined) {
-                localVarQueryParameter['sort'] = sort;
+            if (name !== undefined) {
+                localVarQueryParameter['name'] = name;
             }
 
-            if (skip !== undefined) {
-                localVarQueryParameter['skip'] = skip;
+            if (author !== undefined) {
+                localVarQueryParameter['author'] = author;
             }
 
-
-    
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @summary Searchforgametags
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameTagsSearchForGameTagsPost: async (data: string, sort?: string, skip?: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('searchForGameTagsSearchForGameTagsPost', 'data', data)
-            const localVarPath = `/searchForGameTags`;
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
+            if (date !== undefined) {
+                localVarQueryParameter['date'] = date;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            if (data !== undefined) {
-                localVarQueryParameter['data'] = data;
+            if (city !== undefined) {
+                localVarQueryParameter['city'] = city;
             }
 
             if (sort !== undefined) {
@@ -655,12 +519,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {number} coordX 
          * @param {number} coordY 
          * @param {string} description 
-         * @param {number} tag 
+         * @param {Array<string>} requestBody 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, tag: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, tag, options);
+        async addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, requestBody: Array<string>, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, requestBody, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['DefaultApi.addNewGameAddNewGamePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
@@ -672,10 +536,23 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getCitiesGetCitiesPost(skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getCitiesGetCitiesPost(skip, options);
+        async getCitiesCitiesPost(skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getCitiesCitiesPost(skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getCitiesGetCitiesPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getCitiesCitiesPost']?.[localVarOperationServerIndex]?.url;
+            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
+        },
+        /**
+         * 
+         * @summary Gettags
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getTagsTagsPost(skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getTagsTagsPost(skip, options);
+            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.getTagsTagsPost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -732,77 +609,21 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Searchforgameauthor
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async searchForGameAuthorSearchForGameAuthorPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameAuthorSearchForGameAuthorPost(data, sort, skip, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameAuthorSearchForGameAuthorPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Searchforgamedate
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async searchForGameDateSearchForGameDatePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameDateSearchForGameDatePost(data, sort, skip, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameDateSearchForGameDatePost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Searchforgamename
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async searchForGameNameSearchForGameNamePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameNameSearchForGameNamePost(data, sort, skip, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameNameSearchForGameNamePost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
          * @summary Searchforgame
-         * @param {string} data 
+         * @param {string} [tag] 
+         * @param {string} [name] 
+         * @param {string} [author] 
+         * @param {string} [date] 
+         * @param {string} [city] 
          * @param {string} [sort] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async searchForGameSearchForGameCityPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameSearchForGameCityPost(data, sort, skip, options);
+        async searchForGameSearchForGamePost(tag?: string, name?: string, author?: string, date?: string, city?: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameSearchForGamePost(tag, name, author, date, city, sort, skip, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameSearchForGameCityPost']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @summary Searchforgametags
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async searchForGameTagsSearchForGameTagsPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.searchForGameTagsSearchForGameTagsPost(data, sort, skip, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameTagsSearchForGameTagsPost']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['DefaultApi.searchForGameSearchForGamePost']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -841,12 +662,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {number} coordX 
          * @param {number} coordY 
          * @param {string} description 
-         * @param {number} tag 
+         * @param {Array<string>} requestBody 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, tag: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, tag, options).then((request) => request(axios, basePath));
+        addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, requestBody: Array<string>, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, requestBody, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -855,8 +676,18 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getCitiesGetCitiesPost(skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.getCitiesGetCitiesPost(skip, options).then((request) => request(axios, basePath));
+        getCitiesCitiesPost(skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.getCitiesCitiesPost(skip, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Gettags
+         * @param {number} [skip] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getTagsTagsPost(skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.getTagsTagsPost(skip, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -900,63 +731,19 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Searchforgameauthor
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameAuthorSearchForGameAuthorPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.searchForGameAuthorSearchForGameAuthorPost(data, sort, skip, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Searchforgamedate
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameDateSearchForGameDatePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.searchForGameDateSearchForGameDatePost(data, sort, skip, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Searchforgamename
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameNameSearchForGameNamePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.searchForGameNameSearchForGameNamePost(data, sort, skip, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
          * @summary Searchforgame
-         * @param {string} data 
+         * @param {string} [tag] 
+         * @param {string} [name] 
+         * @param {string} [author] 
+         * @param {string} [date] 
+         * @param {string} [city] 
          * @param {string} [sort] 
          * @param {number} [skip] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        searchForGameSearchForGameCityPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.searchForGameSearchForGameCityPost(data, sort, skip, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @summary Searchforgametags
-         * @param {string} data 
-         * @param {string} [sort] 
-         * @param {number} [skip] 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        searchForGameTagsSearchForGameTagsPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
-            return localVarFp.searchForGameTagsSearchForGameTagsPost(data, sort, skip, options).then((request) => request(axios, basePath));
+        searchForGameSearchForGamePost(tag?: string, name?: string, author?: string, date?: string, city?: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig): AxiosPromise<any> {
+            return localVarFp.searchForGameSearchForGamePost(tag, name, author, date, city, sort, skip, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -991,13 +778,13 @@ export class DefaultApi extends BaseAPI {
      * @param {number} coordX 
      * @param {number} coordY 
      * @param {string} description 
-     * @param {number} tag 
+     * @param {Array<string>} requestBody 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, tag: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, tag, options).then((request) => request(this.axios, this.basePath));
+    public addNewGameAddNewGamePost(userToken: string, title: string, coordX: number, coordY: number, description: string, requestBody: Array<string>, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).addNewGameAddNewGamePost(userToken, title, coordX, coordY, description, requestBody, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1008,8 +795,20 @@ export class DefaultApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public getCitiesGetCitiesPost(skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).getCitiesGetCitiesPost(skip, options).then((request) => request(this.axios, this.basePath));
+    public getCitiesCitiesPost(skip?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getCitiesCitiesPost(skip, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Gettags
+     * @param {number} [skip] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DefaultApi
+     */
+    public getTagsTagsPost(skip?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).getTagsTagsPost(skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1062,72 +861,20 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Searchforgameauthor
-     * @param {string} data 
-     * @param {string} [sort] 
-     * @param {number} [skip] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public searchForGameAuthorSearchForGameAuthorPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).searchForGameAuthorSearchForGameAuthorPost(data, sort, skip, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Searchforgamedate
-     * @param {string} data 
-     * @param {string} [sort] 
-     * @param {number} [skip] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public searchForGameDateSearchForGameDatePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).searchForGameDateSearchForGameDatePost(data, sort, skip, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Searchforgamename
-     * @param {string} data 
-     * @param {string} [sort] 
-     * @param {number} [skip] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public searchForGameNameSearchForGameNamePost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).searchForGameNameSearchForGameNamePost(data, sort, skip, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
      * @summary Searchforgame
-     * @param {string} data 
+     * @param {string} [tag] 
+     * @param {string} [name] 
+     * @param {string} [author] 
+     * @param {string} [date] 
+     * @param {string} [city] 
      * @param {string} [sort] 
      * @param {number} [skip] 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public searchForGameSearchForGameCityPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).searchForGameSearchForGameCityPost(data, sort, skip, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @summary Searchforgametags
-     * @param {string} data 
-     * @param {string} [sort] 
-     * @param {number} [skip] 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof DefaultApi
-     */
-    public searchForGameTagsSearchForGameTagsPost(data: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
-        return DefaultApiFp(this.configuration).searchForGameTagsSearchForGameTagsPost(data, sort, skip, options).then((request) => request(this.axios, this.basePath));
+    public searchForGameSearchForGamePost(tag?: string, name?: string, author?: string, date?: string, city?: string, sort?: string, skip?: number, options?: RawAxiosRequestConfig) {
+        return DefaultApiFp(this.configuration).searchForGameSearchForGamePost(tag, name, author, date, city, sort, skip, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

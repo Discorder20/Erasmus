@@ -90,32 +90,135 @@ export default function Layout() {
     }
   }
 
-  const getGames = async () => {
+const getGames = async (filters: {
+    tag?: string;
+    name?: string;
+    author?: string;
+    date?: string;
+    city?: string;
+    sort?: string;
+    skip?: number;
+} = {}) => {
     let api = new DefaultApi();
     try {
+<<<<<<< HEAD
       const response = await api.searchForGameNameSearchForGameNamePost("my game")
 
       console.log("API response:", response);
       console.log("data", response.data)
+=======
+        const response = await api.searchForGameSearchForGamePost(
+            filters.tag,
+            filters.name,
+            filters.author,
+            filters.date,
+            filters.city,
+            filters.sort,
+            filters.skip || 0
+        );
 
-      if (response?.data) {
-        return response.data;
-      } else {
-        Alert.alert("Błąd pobierania gier", "Brak danych w odpowiedzi.");
+        if (!response?.data || !Array.isArray(response.data)) {
+            Alert.alert("Błąd pobierania gier", "Nieprawidłowa odpowiedź z serwera.");
+            return [];
+        }
+>>>>>>> 41cbaf1 (Adding filtering and sorting of games)
+
+        if (response.data.length === 0) {
+            Alert.alert("Brak wyników", "Nie znaleziono żadnych gier.");
+            return [];
+        }
+
+        const gameMap = new Map();
+
+        response.data.forEach(game => {
+            if (!game?.id) return;
+
+            if (gameMap.has(game.id)) {
+                const existingGame = gameMap.get(game.id);
+                existingGame.Tag = existingGame.Tag ? `${existingGame.Tag}, ${game.Tag || ""}` : game.Tag || "";
+            } else {
+                gameMap.set(game.id, { ...game, Tag: game.Tag || "" });
+            }
+        });
+
+        return Array.from(gameMap.values());
+
+    } catch (error) {
+        console.error("Błąd pobierania gier:", error);
+
+        if (error?.response) {
+            Alert.alert("Błąd pobierania gier", `Błąd serwera: ${error.response.status}`);
+        } else if (error?.request) {
+            Alert.alert("Błąd pobierania gier", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+        } else {
+            Alert.alert("Błąd pobierania gier", "Wystąpił nieoczekiwany błąd.");
+        }
         return [];
+    }
+};
+
+
+  const getCities = async () => {
+      let api = new DefaultApi();
+      try {
+          const response = await api.getCitiesCitiesPost();
+
+          if (!response?.data || !Array.isArray(response.data)) {
+              Alert.alert("Błąd pobierania miast", "Nieprawidłowa odpowiedź z serwera.");
+              return [];
+          }
+
+          if (response.data.length === 0) {
+              Alert.alert("Brak wyników", "Nie znaleziono dostępnych miast.");
+              return [];
+          }
+
+          return response.data;
+      } catch (error) {
+          console.error("Błąd pobierania miast:", error);
+
+          if (error?.response) {
+              Alert.alert("Błąd pobierania miast", `Błąd serwera: ${error.response.status}`);
+          } else if (error?.request) {
+              Alert.alert("Błąd pobierania miast", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+          } else {
+              Alert.alert("Błąd pobierania miast", "Wystąpił nieoczekiwany błąd.");
+          }
+          return [];
       }
-    } catch (error: any) {
-      console.log(error);
-      if (error?.response) {
-        Alert.alert("Błąd pobierania gier", "Sprawdź poprawność wprowadzonych danych.");
-      } else if (error?.request) {
-        Alert.alert("Błąd pobierania gier", "Brak połączenia z serwerem.");
-      } else {
-        Alert.alert("Błąd pobierania gier", "Wystąpił nieoczekiwany błąd.");
+  };
+
+
+  const getTags = async () => {
+      let api = new DefaultApi();
+      try {
+          const response = await api.getTagsTagsPost();
+
+          if (!response?.data || !Array.isArray(response.data)) {
+              Alert.alert("Błąd pobierania tagów", "Nieprawidłowa odpowiedź z serwera.");
+              return [];
+          }
+
+          if (response.data.length === 0) {
+              Alert.alert("Brak wyników", "Nie znaleziono dostępnych tagów.");
+              return [];
+          }
+
+          return response.data;
+      } catch (error) {
+          console.error("Błąd pobierania tagów:", error);
+
+          if (error?.response) {
+              Alert.alert("Błąd pobierania tagów", `Błąd serwera: ${error.response.status}`);
+          } else if (error?.request) {
+              Alert.alert("Błąd pobierania tagów", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+          } else {
+              Alert.alert("Błąd pobierania tagów", "Wystąpił nieoczekiwany błąd.");
+          }
+          return [];
       }
-    }  
-    return [];
-  }
+  };
+
 
   
   const handleSignOut = async () => {
@@ -134,7 +237,7 @@ export default function Layout() {
   if (isLogged) {
     return (
       <>
-        <RootLayout handleSignOut={handleSignOut} getGames={getGames} />
+        <RootLayout handleSignOut={handleSignOut} getGames={getGames} getCities={getCities} getTags={getTags}/>
 
       </>
     );
