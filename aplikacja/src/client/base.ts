@@ -19,11 +19,7 @@ import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 
-<<<<<<< HEAD
-export const BASE_PATH = "http://192.168.1.16:8000".replace(/\/+$/, "");
-=======
-export const BASE_PATH = "http://192.168.8.109:8000".replace(/\/+$/, "");
->>>>>>> 41cbaf1 (Adding filtering and sorting of games)
+export const BASE_PATH = "http://192.168.1.6:8000".replace(/\/+$/, "");
 
 /**
  *
