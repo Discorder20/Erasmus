@@ -254,8 +254,8 @@ export default function AllGamesScreen() {
               </View>
                 <Quiz
                   questions={questions}
-                  triggerText="Start Quiz"
-                  submitText="Submit Answer"
+                  triggerText="Rozpocznij Quiz"
+                  submitText="Zatwierdź odpowiedź"
                   onCompleted={handleQuizCompleted}
                   title={item.title}
                   description={item.Description}
@@ -284,6 +284,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 3 },
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   gameTextContainer: {
     flex: 1,

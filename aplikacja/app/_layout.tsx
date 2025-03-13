@@ -101,12 +101,6 @@ const getGames = async (filters: {
 } = {}) => {
     let api = new DefaultApi();
     try {
-<<<<<<< HEAD
-      const response = await api.searchForGameNameSearchForGameNamePost("my game")
-
-      console.log("API response:", response);
-      console.log("data", response.data)
-=======
         const response = await api.searchForGameSearchForGamePost(
             filters.tag,
             filters.name,
@@ -121,7 +115,6 @@ const getGames = async (filters: {
             Alert.alert("Błąd pobierania gier", "Nieprawidłowa odpowiedź z serwera.");
             return [];
         }
->>>>>>> 41cbaf1 (Adding filtering and sorting of games)
 
         if (response.data.length === 0) {
             Alert.alert("Brak wyników", "Nie znaleziono żadnych gier.");
@@ -144,15 +137,15 @@ const getGames = async (filters: {
         return Array.from(gameMap.values());
 
     } catch (error) {
-        console.error("Błąd pobierania gier:", error);
+        // console.error("Błąd pobierania gier:", error);
 
-        if (error?.response) {
-            Alert.alert("Błąd pobierania gier", `Błąd serwera: ${error.response.status}`);
-        } else if (error?.request) {
-            Alert.alert("Błąd pobierania gier", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
-        } else {
-            Alert.alert("Błąd pobierania gier", "Wystąpił nieoczekiwany błąd.");
-        }
+        // if (error?.response) {
+        //     Alert.alert("Błąd pobierania gier", `Błąd serwera: ${error.response.status}`);
+        // } else if (error?.request) {
+        //     Alert.alert("Błąd pobierania gier", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+        // } else {
+        //     Alert.alert("Błąd pobierania gier", "Wystąpił nieoczekiwany błąd.");
+        // }
         return [];
     }
 };
@@ -164,26 +157,26 @@ const getGames = async (filters: {
           const response = await api.getCitiesCitiesPost();
 
           if (!response?.data || !Array.isArray(response.data)) {
-              Alert.alert("Błąd pobierania miast", "Nieprawidłowa odpowiedź z serwera.");
-              return [];
+              // Alert.alert("Błąd pobierania miast", "Nieprawidłowa odpowiedź z serwera.");
+              // return [];
           }
 
           if (response.data.length === 0) {
-              Alert.alert("Brak wyników", "Nie znaleziono dostępnych miast.");
+              // Alert.alert("Brak wyników", "Nie znaleziono dostępnych miast.");
               return [];
           }
 
           return response.data;
       } catch (error) {
-          console.error("Błąd pobierania miast:", error);
+          // console.error("Błąd pobierania miast:", error);
 
-          if (error?.response) {
-              Alert.alert("Błąd pobierania miast", `Błąd serwera: ${error.response.status}`);
-          } else if (error?.request) {
-              Alert.alert("Błąd pobierania miast", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
-          } else {
-              Alert.alert("Błąd pobierania miast", "Wystąpił nieoczekiwany błąd.");
-          }
+          // if (error?.response) {
+          //     Alert.alert("Błąd pobierania miast", `Błąd serwera: ${error.response.status}`);
+          // } else if (error?.request) {
+          //     Alert.alert("Błąd pobierania miast", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+          // } else {
+          //     Alert.alert("Błąd pobierania miast", "Wystąpił nieoczekiwany błąd.");
+          // }
           return [];
       }
   };
@@ -208,13 +201,13 @@ const getGames = async (filters: {
       } catch (error) {
           console.error("Błąd pobierania tagów:", error);
 
-          if (error?.response) {
-              Alert.alert("Błąd pobierania tagów", `Błąd serwera: ${error.response.status}`);
-          } else if (error?.request) {
-              Alert.alert("Błąd pobierania tagów", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
-          } else {
-              Alert.alert("Błąd pobierania tagów", "Wystąpił nieoczekiwany błąd.");
-          }
+          // if (error?.response) {
+          //     Alert.alert("Błąd pobierania tagów", `Błąd serwera: ${error.response.status}`);
+          // } else if (error?.request) {
+          //     Alert.alert("Błąd pobierania tagów", "Brak odpowiedzi od serwera. Sprawdź połączenie internetowe.");
+          // } else {
+          //     Alert.alert("Błąd pobierania tagów", "Wystąpił nieoczekiwany błąd.");
+          // }
           return [];
       }
   };

@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, TextInput, StyleSheet, Dimensions, Modal } from 'react-native';
 import { X } from 'lucide-react-native';
 import { RadioButton } from 'react-native-paper';
+import * as Location from 'expo-location';
 
-export type QuestionType = 'options' | 'number' | 'string';
+export type QuestionType = 'options' | 'number' | 'string' | 'map';
 
 export interface Question {
   id: number;
@@ -12,6 +13,8 @@ export interface Question {
   options?: string[];
   correctAnswer: string | number;
   hint: string;
+  pointX?: number,
+  pointY?: number
 }
 
 interface QuizProps {
@@ -46,9 +49,53 @@ const Quiz: React.FC<QuizProps> = ({
     }
   }, [showQuiz, quizCompleted, startTime]);
 
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+        return;
+      }
+    })();
+  }, []);
+
+
   const handleAnswer = () => {
     const question = questions[currentQuestion];
     if (answer.toString().toLowerCase() === question.correctAnswer.toString().toLowerCase()) {
+      if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+        setAnswer('');
+        setShowHint(false);
+      } else {
+        // Quiz completed
+        setQuizCompleted(true);
+        const endTime = Date.now();
+        const duration = startTime ? (endTime - startTime) / 1000 : 0; // Duration in seconds
+        onCompleted(duration);
+      }
+    } else {
+      setShowHint(true);
+    }
+  };
+
+  const calculateDistance = (coord1 : {latitude: number, longitude: number}, coord2 : {latitude: number, longitude: number}) => {
+    const R = 6371; // Radius of Earth in km
+    const dLat = (coord2.latitude - coord1.latitude) * (Math.PI / 180);
+    const dLon = (coord2.longitude - coord1.longitude) * (Math.PI / 180);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(coord1.latitude * (Math.PI / 180)) *
+        Math.cos(coord2.latitude * (Math.PI / 180)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c; // Distance in km
+  };
+
+  const handleMapAnswer = async () => {
+    const question = questions[currentQuestion];
+    let location = await Location.getCurrentPositionAsync({});
+    if (calculateDistance({latitude: location.coords.latitude, longitude: location.coords.longitude}, {latitude: question.pointX as number, longitude: question.pointY as number}) < 100) {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setAnswer('');
@@ -149,30 +196,50 @@ const Quiz: React.FC<QuizProps> = ({
         <Text style={styles.startPageDescription}>{description}</Text>
         
         <TouchableOpacity style={styles.startButton} onPress={startQuiz}>
-          <Text style={styles.startButtonText}>Start Quiz</Text>
+          <Text style={styles.startButtonText}>Rozpocznij Quiz</Text>
         </TouchableOpacity>
       </View>
     );
   } else if (quizCompleted) {
     modalContent = (
       <View style={styles.modalContent}>
-        <Text style={styles.congratsMessage}>Congratulations! You've completed the quiz!</Text>
+        <Text style={styles.congratsMessage}>Gratulacje! Zakończyłeś quiz!</Text>
         <TouchableOpacity
           style={styles.hideQuizButton}
           onPress={closeModal}
         >
-          <Text style={styles.hideQuizButtonText}>Close Quiz</Text>
+          <Text style={styles.hideQuizButtonText}>Zamknij Quiz</Text>
         </TouchableOpacity>
       </View>
     );
   } else if (showQuiz) {
-    modalContent = (
+    modalContent = questions[currentQuestion].type === 'map' ? (
+      <View style={styles.modalContent}>
+      <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+        <X size={24} color="#4A90E2" />
+      </TouchableOpacity>
+      
+      <Text style={styles.progressText}>Zadanie z mapą</Text>
+      <Text style={styles.question}>{questions[currentQuestion].question}</Text>
+      
+      <TouchableOpacity 
+        style={[styles.submitButton]} 
+        onPress={handleMapAnswer}
+      >
+        <Text style={styles.submitButtonText}>{'sprawdź moją lokalizację'}</Text>
+      </TouchableOpacity>
+      
+      {showHint && (
+        <Text style={styles.hint}>Podpowiedź: {questions[currentQuestion].hint}</Text>
+      )}
+    </View>
+    ) : (
       <View style={styles.modalContent}>
         <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
           <X size={24} color="#4A90E2" />
         </TouchableOpacity>
         
-        <Text style={styles.progressText}>Question {currentQuestion + 1} of {questions.length}</Text>
+        <Text style={styles.progressText}>Pytanie {currentQuestion + 1} z {questions.length}</Text>
         <Text style={styles.question}>{questions[currentQuestion].question}</Text>
         
         {renderQuestion()}
@@ -186,7 +253,7 @@ const Quiz: React.FC<QuizProps> = ({
         </TouchableOpacity>
         
         {showHint && (
-          <Text style={styles.hint}>Hint: {questions[currentQuestion].hint}</Text>
+          <Text style={styles.hint}>Podpowiedź: {questions[currentQuestion].hint}</Text>
         )}
       </View>
     );
@@ -238,6 +305,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    height: 50
   },
   showQuizButtonText: {
     color: 'white',
