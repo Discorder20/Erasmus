@@ -17,10 +17,10 @@ const questions: Question[] = [
   {
     id: 2,
     type: "map",
-    question: "Udaj się do maszewo",
+    question: "Udaj się na Maszewo",
     correctAnswer: "",
     hint: 'To za skarpą',
-    pointX: 55.5814534,
+    pointX: 52.5814534,
     pointY: 19.626808150000002,
   },
   // ... other questions (keeping them for brevity)
@@ -80,12 +80,14 @@ export default function AllGamesScreen({
   
   // Apply filters when the apply button is clicked
   const applyFilters = () => {
-    setFilters(prev => ({
-      ...prev,
-      name: inputValues.name || undefined,
-      author: inputValues.author || undefined,
-      date: inputValues.date || undefined,
-    }));
+    setFilters((prev: any) => {
+      return {
+        ...prev,
+        name: inputValues.name || undefined,
+        author: inputValues.author || undefined,
+        date: inputValues.date || undefined,
+      }
+    });
     fetchGames();
   };
 
@@ -171,14 +173,14 @@ export default function AllGamesScreen({
         style={styles.toggleButton}
       >
         <Text style={styles.toggleButtonText}>
-          {filtersVisible ? "Hide Filters" : "Show Filters"}
+          {filtersVisible ? "Ukryj Filtry" : "Pokaż Filtry"}
         </Text>
       </TouchableOpacity>
       
       {filtersVisible && (
         <>
         <ScrollView style={styles.filterSection}>
-          <Text style={styles.pickerLabel}>Select Tag:</Text>
+          <Text style={styles.pickerLabel}>Wybierz tag:</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={filters.tag}
@@ -186,39 +188,39 @@ export default function AllGamesScreen({
               style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
               mode={"dialog"}
             >
-              <Picker.Item label="Select tag" value={undefined} />
+              <Picker.Item label="Wybierz tag" value={undefined} />
               {tags.length > 0 ? (
                 tags.map((tag, index) => (
                   <Picker.Item key={index} label={tag.name} value={tag.name} />
                 ))
               ) : (
-                <Picker.Item label="No tags available" value={undefined} />
+                <Picker.Item label="Brak dostępnych tagów" value={undefined} />
               )}
             </Picker>
           </View>
 
           <TextInput
-            placeholder="Enter game name"
+            placeholder="Wprowadź nazwę gry"
             value={inputValues.name}
             onChangeText={(value) => handleInputChange("name", value)}
             style={styles.input}
           />
 
           <TextInput
-            placeholder="Enter author"
+            placeholder="Wprowadź autora"
             value={inputValues.author}
             onChangeText={(value) => handleInputChange("author", value)}
             style={styles.input}
           />
 
           <TextInput
-            placeholder="Enter date (yyyy-mm-dd)"
+            placeholder="Wprowadź datę (yyyy-mm-dd)"
             value={inputValues.date}
             onChangeText={(value) => handleInputChange("date", value)}
             style={styles.input}
           />
 
-          <Text style={styles.pickerLabel}>Select City:</Text>
+          <Text style={styles.pickerLabel}>Wybierz miasto:</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={filters.city}
@@ -226,18 +228,18 @@ export default function AllGamesScreen({
               style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
               mode={"dialog"}
             >
-              <Picker.Item label="Select city" value={undefined} />
+              <Picker.Item label="Wybierz miasto" value={undefined} />
               {cities.length > 0 ? (
                 cities.map((city, index) => (
                   <Picker.Item key={index} label={city.name} value={city.name} />
                 ))
               ) : (
-                <Picker.Item label="No cities available" value={undefined} />
+                <Picker.Item label="Brak dostępnych miast" value={undefined} />
               )}
             </Picker>
           </View>
 
-          <Text style={styles.pickerLabel}>Sort By:</Text>
+          <Text style={styles.pickerLabel}>Sortuj po:</Text>
           <View style={styles.pickerContainer}>
             <Picker
               selectedValue={filters.sort}
@@ -245,7 +247,7 @@ export default function AllGamesScreen({
               style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
               mode={"dialog"}
             >
-              <Picker.Item label="Select sort option" value={undefined} />
+              <Picker.Item label="Wybierz opcję" value={undefined} />
               <Picker.Item label="Tag" value="tag" />
               <Picker.Item label="Name" value="name" />
               <Picker.Item label="Author" value="author" />
@@ -260,14 +262,14 @@ export default function AllGamesScreen({
               onPress={applyFilters} 
               style={styles.applyButton}
             >
-              <Text style={styles.buttonText}>Apply Filters</Text>
+              <Text style={styles.buttonText}>Zastosuj Filtry</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
               onPress={resetFilters} 
               style={styles.resetButton}
             >
-              <Text style={styles.buttonText}>Reset</Text>
+              <Text style={styles.buttonText}>Zresetuj</Text>
             </TouchableOpacity>
           </View>
 
@@ -277,11 +279,11 @@ export default function AllGamesScreen({
       
       {loading ? (
         <View style={styles.loadingContainer}>
-          <Text style={styles.loadingText}>Loading games...</Text>
+          <Text style={styles.loadingText}>Ładowanie gier...</Text>
         </View>
       ) : games.length === 0 ? (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>No games found</Text>
+          <Text style={styles.emptyText}>Nie znaleziono gier</Text>
         </View>
       ) : (
         <FlatList
@@ -373,7 +375,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   picker: {
-    height: 50,
+    height: 60,
     width: "100%",
   },
   buttonRow: {

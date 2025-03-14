@@ -94,7 +94,9 @@ const Quiz: React.FC<QuizProps> = ({
 
   const handleMapAnswer = async () => {
     const question = questions[currentQuestion];
+    console.log('pobieranie lokalizacji')
     let location = await Location.getCurrentPositionAsync({});
+    console.log('pobieranie lokalizacji v2')
     if (calculateDistance({latitude: location.coords.latitude, longitude: location.coords.longitude}, {latitude: question.pointX as number, longitude: question.pointY as number}) < 100) {
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
