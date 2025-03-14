@@ -209,13 +209,13 @@ def searchForGame(tag : str = "", name : str = "", author : str = "", date : str
             statementTextTasks = statementTextTasks.where(col == val)
             
     for rowChoiceTasks in engine.connect().execute(statementChoiceTasks):
-        tasks.append({"Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
+        tasks.append({"Task Type":"Choice Task", "Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
 
     for rowNumberTasks in engine.connect().execute(statementNumberTasks):
-        tasks.append({"Game Id": rowNumberTasks.id, "Task Number":rowNumberTasks.task_number, "CoordX" : rowNumberTasks.coord_x, "CoordY" : rowNumberTasks.coord_y, "Points" : rowNumberTasks.points, "Question" : rowNumberTasks.question, "Answer" : rowNumberTasks.answer, "Hints" : rowNumberTasks.hints})
+        tasks.append({"Task Type":"Number Task", "Game Id": rowNumberTasks.id, "Task Number":rowNumberTasks.task_number, "CoordX" : rowNumberTasks.coord_x, "CoordY" : rowNumberTasks.coord_y, "Points" : rowNumberTasks.points, "Question" : rowNumberTasks.question, "Answer" : rowNumberTasks.answer, "Hints" : rowNumberTasks.hints})
 
     for rowTextTasks in engine.connect().execute(statementTextTasks):
-        tasks.append({"Game Id": rowTextTasks.id,"Task Number":rowTextTasks.task_number, "CoordX" : rowTextTasks.coord_x, "CoordY" : rowTextTasks.coord_y, "Points" : rowTextTasks.points, "Question" : rowTextTasks.question, "Answer" : rowTextTasks.answer, "Hints" : rowTextTasks.hints})
+        tasks.append({"Task Type":"Text Task", "Game Id": rowTextTasks.id,"Task Number":rowTextTasks.task_number, "CoordX" : rowTextTasks.coord_x, "CoordY" : rowTextTasks.coord_y, "Points" : rowTextTasks.points, "Question" : rowTextTasks.question, "Answer" : rowTextTasks.answer, "Hints" : rowTextTasks.hints})
     
     for rowTags in engine.connect().execute(statementTags):
         tags.append({"id":rowTags.id,"name":rowTags.name})
