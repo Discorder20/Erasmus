@@ -34,8 +34,8 @@ export default function RootLayout({ handleSignOut, getGames, getCities, getTags
     // { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
     // { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
     { name: "WSZYSTKIE GRY", id: "AllGames", component: ProvidedAllGames },
-    { name: "Mapa", id: "Map", component: MyMapScreen },
-    // { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
+    // { name: "Mapa", id: "Map", component: MyMapScreen },
+    { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
   ]
 
   const CustomDrawerContent = (props: any) => {
@@ -73,7 +73,7 @@ export default function RootLayout({ handleSignOut, getGames, getCities, getTags
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
       <Drawer.Navigator
-        initialRouteName="Mapa"
+        initialRouteName="OSTATNIE GRY"
         drawerContent={(props) => <CustomDrawerContent {...props} />}
         screenOptions={{
           headerShown: true,
