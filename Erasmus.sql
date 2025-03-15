@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Feb 20, 2025 at 07:05 PM
+-- Generation Time: Mar 15, 2025 at 10:55 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
 
@@ -20,32 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `Erasmus`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `choice_tasks`
---
-
-CREATE TABLE `choice_tasks` (
-  `id` int(11) NOT NULL,
-  `game_id` int(11) DEFAULT NULL,
-  `task_number` int(11) NOT NULL,
-  `coord_x` decimal(10,6) NOT NULL,
-  `coord_y` decimal(10,6) NOT NULL,
-  `points` int(11) NOT NULL,
-  `question` varchar(255) NOT NULL,
-  `options` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`options`)),
-  `correct_option_index` int(11) NOT NULL,
-  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `choice_tasks`
---
-
-INSERT INTO `choice_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `options`, `correct_option_index`, `hints`) VALUES
-(1, 4, 5, 52.546007, 19.685939, 5, 'Co znajduje się na kopcu harcerza?', '[\"Krzyż walecznych\", \"Krzyż harcerski\", \"Krzyż Virtuti Militari\"]', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -152,32 +126,6 @@ INSERT INTO `login_details` (`id`, `login`, `password`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `number_tasks`
---
-
-CREATE TABLE `number_tasks` (
-  `id` int(11) NOT NULL,
-  `game_id` int(11) DEFAULT NULL,
-  `task_number` int(11) NOT NULL,
-  `coord_x` decimal(10,6) NOT NULL,
-  `coord_y` decimal(10,6) NOT NULL,
-  `points` int(11) NOT NULL,
-  `question` varchar(255) NOT NULL,
-  `answer` int(11) NOT NULL,
-  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `number_tasks`
---
-
-INSERT INTO `number_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
-(3, 6, 1, 52.546007, 19.685939, 5, 'Ile lwów znajduje się przed ratuszem?', 2, NULL),
-(4, 5, 2, 52.545007, 19.684939, 5, 'Ile postaci przedstawia mural nad murami?', 4, NULL);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tags`
 --
 
@@ -201,32 +149,6 @@ INSERT INTO `tags` (`id`, `name`) VALUES
 (8, 'Wyczynowe'),
 (9, 'Nie zdrowe'),
 (10, 'Edukacyjne');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `text_tasks`
---
-
-CREATE TABLE `text_tasks` (
-  `id` int(11) NOT NULL,
-  `game_id` int(11) DEFAULT NULL,
-  `task_number` int(11) NOT NULL,
-  `coord_x` decimal(10,6) NOT NULL,
-  `coord_y` decimal(10,6) NOT NULL,
-  `points` int(11) NOT NULL,
-  `question` varchar(255) NOT NULL,
-  `answer` varchar(255) NOT NULL,
-  `hints` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`hints`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `text_tasks`
---
-
-INSERT INTO `text_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
-(1, 4, 3, 52.545007, 19.684939, 5, 'Wpisz fragment tekstu na pomniku Broniewskiego', 'Z górskiej spoglądam na królewski las', NULL),
-(2, 6, 4, 52.546007, 19.685939, 5, 'Podaj trzy istotne słowa związane z Placem Trzynastu Straconych', 'chleb, pokój, wolność', NULL);
 
 -- --------------------------------------------------------
 
@@ -268,13 +190,6 @@ INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `phone_number`) V
 --
 
 --
--- Indexes for table `choice_tasks`
---
-ALTER TABLE `choice_tasks`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `game_id` (`game_id`);
-
---
 -- Indexes for table `cities`
 --
 ALTER TABLE `cities`
@@ -301,24 +216,10 @@ ALTER TABLE `login_details`
   ADD KEY `login_details_ibfk_1` (`id`);
 
 --
--- Indexes for table `number_tasks`
---
-ALTER TABLE `number_tasks`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `game_id` (`game_id`);
-
---
 -- Indexes for table `tags`
 --
 ALTER TABLE `tags`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `text_tasks`
---
-ALTER TABLE `text_tasks`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `game_id` (`game_id`);
 
 --
 -- Indexes for table `tokens`
@@ -337,12 +238,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `choice_tasks`
---
-ALTER TABLE `choice_tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
 -- AUTO_INCREMENT for table `cities`
 --
 ALTER TABLE `cities`
@@ -355,22 +250,10 @@ ALTER TABLE `games`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `number_tasks`
---
-ALTER TABLE `number_tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
 -- AUTO_INCREMENT for table `tags`
 --
 ALTER TABLE `tags`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
--- AUTO_INCREMENT for table `text_tasks`
---
-ALTER TABLE `text_tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -381,12 +264,6 @@ ALTER TABLE `users`
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `choice_tasks`
---
-ALTER TABLE `choice_tasks`
-  ADD CONSTRAINT `choice_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `games`
@@ -406,18 +283,6 @@ ALTER TABLE `game_tags`
 --
 ALTER TABLE `login_details`
   ADD CONSTRAINT `login_details_ibfk_1` FOREIGN KEY (`id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `number_tasks`
---
-ALTER TABLE `number_tasks`
-  ADD CONSTRAINT `number_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `text_tasks`
---
-ALTER TABLE `text_tasks`
-  ADD CONSTRAINT `text_tasks_ibfk_1` FOREIGN KEY (`game_id`) REFERENCES `games` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `tokens`
