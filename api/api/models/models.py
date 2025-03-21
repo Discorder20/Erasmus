@@ -57,6 +57,7 @@ class Games(Base):
     author: Mapped['Users'] = relationship('Users', back_populates='games')
     tag: Mapped['Tags'] = relationship('Tags', secondary='game_tags', back_populates='game')
     choice_tasks: Mapped[List['ChoiceTasks']] = relationship('ChoiceTasks', uselist=True, back_populates='game')
+    location_tasks: Mapped[List['LocationTasks']] = relationship('LocationTasks', uselist=True, back_populates='game')
     number_tasks: Mapped[List['NumberTasks']] = relationship('NumberTasks', uselist=True, back_populates='game')
     text_tasks: Mapped[List['TextTasks']] = relationship('TextTasks', uselist=True, back_populates='game')
 
@@ -110,6 +111,25 @@ t_game_tags = Table(
     ForeignKeyConstraint(['tag_id'], ['tags.id'], ondelete='CASCADE', name='game_tags_ibfk_2'),
     Index('game_tags_ibfk_2', 'tag_id')
 )
+
+
+class LocationTasks(Base):
+    __tablename__ = 'location_tasks'
+    __table_args__ = (
+        ForeignKeyConstraint(['game_id'], ['games.id'], ondelete='CASCADE', name='location_task_ibfk_1'),
+        Index('location_task_ibfk_1', 'game_id')
+    )
+
+    id = mapped_column(INTEGER(11), primary_key=True)
+    task_number = mapped_column(INTEGER(11), nullable=False)
+    coord_x = mapped_column(DECIMAL(10, 6), nullable=False)
+    coord_y = mapped_column(DECIMAL(10, 6), nullable=False)
+    points = mapped_column(INTEGER(11), nullable=False)
+    question = mapped_column(String(255), nullable=False)
+    hints = mapped_column(LONGTEXT, nullable=False)
+    game_id = mapped_column(INTEGER(11))
+
+    game: Mapped[Optional['Games']] = relationship('Games', back_populates='location_tasks')
 
 
 class NumberTasks(Base):
