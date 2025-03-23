@@ -2,29 +2,8 @@ import { useEffect, useState, useCallback } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, Platform, ScrollView } from "react-native";
 import { useFonts } from "expo-font";
-import Quiz, { type Question } from "../quiz";
+import Quiz, { type Question, type QuestionType } from "../quiz";
 import { Picker } from '@react-native-picker/picker';
-
-const questions: Question[] = [
-  {
-    id: 1,
-    type: "options",
-    question: "What is the capital of France?",
-    options: ["London", "Berlin", "Paris", "Madrid"],
-    correctAnswer: "Paris",
-    hint: 'It\'s known as the "City of Light".',
-  },
-  {
-    id: 2,
-    type: "map",
-    question: "Udaj się na Maszewo",
-    correctAnswer: "",
-    hint: 'To za skarpą',
-    pointX: 52.5814534,
-    pointY: 19.626808150000002,
-  },
-  // ... other questions (keeping them for brevity)
-]
 
 const handleQuizCompleted = (duration: number) => {
   console.log(`Quiz completed in ${duration} seconds`);
@@ -126,6 +105,44 @@ export default function AllGamesScreen({
       console.error("Error fetching tags:", error);
       Alert.alert("Error", "Failed to fetch tags list.");
     }
+  };
+
+  const mapTasksToQuestions = (tasksArray: any[][]): Question[] => {
+    const questions: Question[] = [];
+  
+    const taskTypeMap: Record<string, QuestionType> = {
+      "Choice Task": "options",
+      "Number Task": "number",
+      "Text Task": "string",
+      "Location Task": "map",
+    };
+  
+    tasksArray.forEach((tasks) => {
+      tasks.forEach((task) => {
+
+        let options = task.Options;
+        try {
+          options = JSON.parse(options); 
+        }catch (e) {
+          options = undefined;
+        }
+
+        const mappedTask: Question = {
+          id: task["Task Number"],
+          type: taskTypeMap[task["Task Type"]] || "string",  
+          question: task.Question,
+          correctAnswer: task.Answer || task["Corrcect Option Index"] || undefined,  
+          hint: task.Hints || undefined, 
+          options: options || undefined,  
+          pointX: task.CoordX || undefined, 
+          pointY: task.CoordY || undefined,  
+        };
+  
+        questions.push(mappedTask);
+      });
+    });
+  
+    return questions;
   };
 
   // Initial data loading
@@ -304,7 +321,7 @@ export default function AllGamesScreen({
                 )}
               </View>
               <Quiz
-                questions={questions}
+                questions={mapTasksToQuestions([item.Tasks || []])}
                 triggerText="Rozpocznij Quiz"
                 submitText="Zatwierdź odpowiedź"
                 onCompleted={handleQuizCompleted}

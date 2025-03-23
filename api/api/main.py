@@ -199,6 +199,8 @@ def searchForGame(tag : str = "", name : str = "", author : str = "", date : str
 
     statementTextTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name,  TextTasks.task_number, TextTasks.coord_x, TextTasks.coord_y, TextTasks.points, TextTasks.question, TextTasks.answer, TextTasks.hints).join(Users,  Games.author_id == Users.id).join(TextTasks, TextTasks.game_id == Games.id)
 
+    statementLocationTasks = select(Games.id, Games.title, Games.creation_date, Games.description, Users.first_name,  LocationTasks.task_number, LocationTasks.coord_x, LocationTasks.coord_y, LocationTasks.points, LocationTasks.question, LocationTasks.hints).join(Users,  Games.author_id == Users.id).join(LocationTasks, LocationTasks.game_id == Games.id)
+
     for crit in criteria:
         col, val = crit
         if val != "":
@@ -207,15 +209,21 @@ def searchForGame(tag : str = "", name : str = "", author : str = "", date : str
             statementChoiceTasks = statementChoiceTasks.where(col == val)
             statementNumberTasks = statementNumberTasks.where(col == val)
             statementTextTasks = statementTextTasks.where(col == val)
+            statementLocationTasks = statementLocationTasks.where(col == val)
+    
+
             
     for rowChoiceTasks in engine.connect().execute(statementChoiceTasks):
-        tasks.append({"Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
+        tasks.append({"Task Type":"Choice Task", "Game Id": rowChoiceTasks.id,"Task Number":rowChoiceTasks.task_number, "CoordX" : rowChoiceTasks.coord_x, "CoordY" : rowChoiceTasks.coord_y, "Points" : rowChoiceTasks.points, "Question" : rowChoiceTasks.question, "Options" : rowChoiceTasks.options, "Corrcect Option Index" : rowChoiceTasks.correct_option_index, "Hints" : rowChoiceTasks.hints})
 
     for rowNumberTasks in engine.connect().execute(statementNumberTasks):
-        tasks.append({"Game Id": rowNumberTasks.id, "Task Number":rowNumberTasks.task_number, "CoordX" : rowNumberTasks.coord_x, "CoordY" : rowNumberTasks.coord_y, "Points" : rowNumberTasks.points, "Question" : rowNumberTasks.question, "Answer" : rowNumberTasks.answer, "Hints" : rowNumberTasks.hints})
+        tasks.append({"Task Type":"Number Task", "Game Id": rowNumberTasks.id, "Task Number":rowNumberTasks.task_number, "CoordX" : rowNumberTasks.coord_x, "CoordY" : rowNumberTasks.coord_y, "Points" : rowNumberTasks.points, "Question" : rowNumberTasks.question, "Answer" : rowNumberTasks.answer, "Hints" : rowNumberTasks.hints})
 
     for rowTextTasks in engine.connect().execute(statementTextTasks):
-        tasks.append({"Game Id": rowTextTasks.id,"Task Number":rowTextTasks.task_number, "CoordX" : rowTextTasks.coord_x, "CoordY" : rowTextTasks.coord_y, "Points" : rowTextTasks.points, "Question" : rowTextTasks.question, "Answer" : rowTextTasks.answer, "Hints" : rowTextTasks.hints})
+        tasks.append({"Task Type":"Text Task", "Game Id": rowTextTasks.id,"Task Number":rowTextTasks.task_number, "CoordX" : rowTextTasks.coord_x, "CoordY" : rowTextTasks.coord_y, "Points" : rowTextTasks.points, "Question" : rowTextTasks.question, "Answer" : rowTextTasks.answer, "Hints" : rowTextTasks.hints})
+
+    for rowLocationTasks in engine.connect().execute(statementLocationTasks):
+        tasks.append({"Task Type":"Location Task", "Game Id": rowLocationTasks.id, "Task Number":rowLocationTasks.task_number, "CoordX" : rowLocationTasks.coord_x, "CoordY" : rowLocationTasks.coord_y, "Points" : rowLocationTasks.points, "Question" : rowLocationTasks.question, "Hints" : rowLocationTasks.hints})
     
     for rowTags in engine.connect().execute(statementTags):
         tags.append({"id":rowTags.id,"name":rowTags.name})
