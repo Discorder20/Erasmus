@@ -10,6 +10,14 @@ const handleQuizCompleted = (duration: number) => {
   // You can add more logic here, such as sending the result to a server
 }
 
+const mockQuestion : Question = {
+  id: -1,
+  correctAnswer: 'none',
+  hint: 'no hint for mock',
+  question: 'this is a mock question, if you see it, there are questions missing',
+  type: 'string'
+}
+
 export default function AllGamesScreen({ 
   getGames, 
   getCities, 
@@ -127,11 +135,13 @@ export default function AllGamesScreen({
           options = undefined;
         }
 
+        task["Task Type"] == "Choice Task" ? console.log(options[task["Corrcect Option Index"]]) : null
+
         const mappedTask: Question = {
           id: task["Task Number"],
           type: taskTypeMap[task["Task Type"]] || "string",  
           question: task.Question,
-          correctAnswer: task.Answer || task["Corrcect Option Index"] || undefined,  
+          correctAnswer: task.Answer || (task["Corrcect Option Index"] ? options[task["Corrcect Option Index"]] : undefined),  
           hint: task.Hints || undefined, 
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
@@ -305,7 +315,7 @@ export default function AllGamesScreen({
       ) : (
         <FlatList
           data={games}
-          renderItem={({ item }) => (
+          renderItem={({ item }) => {return (
             <View style={styles.gameItem}>
               <View style={styles.gameTextContainer}>
                 <Text style={styles.gameTitle}>{item.title}</Text>
@@ -321,7 +331,7 @@ export default function AllGamesScreen({
                 )}
               </View>
               <Quiz
-                questions={mapTasksToQuestions([item.Tasks || []])}
+                questions={item.Tasks.length > 0 ? mapTasksToQuestions([item.Tasks || []]) : [mockQuestion]}
                 triggerText="Rozpocznij Quiz"
                 submitText="Zatwierdź odpowiedź"
                 onCompleted={handleQuizCompleted}
@@ -329,7 +339,7 @@ export default function AllGamesScreen({
                 description={item.Description}
               />
             </View>
-          )}
+          )}}
           keyExtractor={(item, index) => (item.id ? item.id.toString() : `game-${index}`)}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
