@@ -45,7 +45,12 @@ CREATE TABLE `choice_tasks` (
 --
 
 INSERT INTO `choice_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `options`, `correct_option_index`, `hints`) VALUES
-(1, 4, 5, 52.546007, 19.685939, 5, 'Co znajduje się na kopcu harcerza?', '[\"Krzyż walecznych\", \"Krzyż harcerski\", \"Krzyż Virtuti Militari\"]', 1, NULL);
+(11, 1, 2, 53.066486, 21.149823, 5, 'Co trzeba przynieść na Sylwestra u Zduniaka?', '["Szampan", "Fajerwerki", "Dobry humor"]', 2, '["Impreza bez tego się nie uda!"]'),
+(12, 4, 5, 52.546007, 19.685939, 5, 'Co znajduje się na kopcu harcerza?', '["Krzyż walecznych", "Krzyż harcerski", "Krzyż Virtuti Militari"]', 1, '["Symbol harcerzy."]'),
+(13, 2, 2, 52.541332, 19.755332, 5, 'Jaka zasada obowiązuje na trasie rowerowej?', '["Nie wolno wyprzedzać", "Kask obowiązkowy", "Tylko dla zawodowców"]', 1, '["To kwestia bezpieczeństwa."]'),
+(14, 6, 2, 52.547000, 19.686500, 5, 'Który z tych budynków jest najstarszy?', '["Katedra", "Ratusz", "Muzeum"]', 0, '["To miejsce kultu."]'),
+(15, 6, 3, 52.548500, 19.687200, 5, 'Co przedstawia rzeźba w centrum rynku?', '["Lwa", "Orła", "Syrenkę"]', 1, '["Symbol Polski."]'),
+(16, 6, 5, 52.549000, 19.688000, 5, 'Która postać historyczna związana jest z Płockiem?', '["Władysław Herman", "Bolesław Chrobry", "Kazimierz Wielki"]', 0, '["Książę Polski."]');
 
 -- --------------------------------------------------------
 
@@ -150,10 +155,8 @@ CREATE TABLE `location_tasks` (
 --
 
 INSERT INTO `location_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `hints`) VALUES
-(1, 1, 1, 52.229676, 21.012229, 10, 'Jaka jest stolica Polski?', 'Podpowiedź 1: Zaczyna się na W.\nPodpowiedź 2: To największe miasto w Polsce.'),
-(2, 1, 2, 48.856613, 2.352222, 15, 'Jaka słynna wieża znajduje się w Paryżu?', 'Podpowiedź 1: Została zbudowana na Wystawę Światową w 1889 roku.\nPodpowiedź 2: Nosi nazwisko swojego inżyniera.'),
-(3, 2, 1, 40.712776, -74.005974, 20, 'Jakie jest przezwisko Nowego Jorku?', 'Podpowiedź 1: Jest związane z owocem.\nPodpowiedź 2: Ludzie mówią \"The ... City\".'),
-(4, 2, 2, 51.507351, -0.127758, 25, 'Jaka rzeka przepływa przez Londyn?', 'Podpowiedź 1: Zaczyna się na T.\nPodpowiedź 2: To najdłuższa rzeka w Anglii.');
+(1, 1, 1, 53.066500, 21.149800, 10, 'Znajdź budynek, w którym odbędzie się Sylwester u Zduniaka.', 'To duży dom przy głównej drodze.'),
+(2, 2, 1, 52.541350, 19.755300, 10, 'Znajdź miejsce startowe dla Rowerowego Szaleństwa.', 'Jest to tor rowerowy w pobliżu parku.');
 
 -- --------------------------------------------------------
 
@@ -199,8 +202,10 @@ CREATE TABLE `number_tasks` (
 --
 
 INSERT INTO `number_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
-(3, 6, 1, 52.546007, 19.685939, 5, 'Ile lwów znajduje się przed ratuszem?', 2, NULL),
-(4, 5, 2, 52.545007, 19.684939, 5, 'Ile postaci przedstawia mural nad murami?', 4, NULL);
+(3, 3, 1, 52.559100, 19.695200, 5, 'Ile schodów prowadzi do wejścia do Ratusza?', 2, '["Policz dokładnie!"]'),
+(4, 6, 1, 52.546007, 19.685939, 5, 'Ile lwów znajduje się przed ratuszem?', 2, '["Znajdują się po obu stronach wejścia."]'),
+(5, 5, 2, 52.545007, 19.684939, 5, 'Ile postaci przedstawia mural nad murami?', 4, '["Zwróć uwagę na detale."]'),
+(6, 4, 1, 52.545000, 19.684900, 5, 'Ile witraży znajduje się w głównym oknie katedry?', 7, '["Spójrz nad wejście."]');
 
 -- --------------------------------------------------------
 
@@ -252,8 +257,10 @@ CREATE TABLE `text_tasks` (
 --
 
 INSERT INTO `text_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, `points`, `question`, `answer`, `hints`) VALUES
-(1, 4, 3, 52.545007, 19.684939, 5, 'Wpisz fragment tekstu na pomniku Broniewskiego', 'Z górskiej spoglądam na królewski las', NULL),
-(2, 6, 4, 52.546007, 19.685939, 5, 'Podaj trzy istotne słowa związane z Placem Trzynastu Straconych', 'chleb, pokój, wolność', NULL);
+(7, 5, 1, 52.545007, 19.684939, 5, 'Jak nazywa się artysta, którego mural można zobaczyć na starówce?', 'Banksy', '["Jego dzieła są znane na całym świecie."]'),
+(8, 4, 3, 52.545007, 19.684939, 5, 'Wpisz fragment tekstu na pomniku Broniewskiego.', 'Z górskiej spoglądam na królewski las', '["Znajdziesz go na pomniku."]'),
+(9, 6, 4, 52.546007, 19.685939, 5, 'Podaj trzy istotne słowa związane z Placem Trzynastu Straconych.', 'chleb, pokój, wolność', '["Dotyczą historii miejsca."]'),
+(10, 6, 1, 52.546007, 19.685939, 5, 'Podaj nazwisko historycznej postaci, której pomnik znajduje się przy rynku.', 'Dąbrowski', '["Znany generał."]');
 
 -- --------------------------------------------------------
 
