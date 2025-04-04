@@ -14,7 +14,8 @@ export interface Question {
   correctAnswer: string | number;
   hint: string;
   pointX?: number,
-  pointY?: number
+  pointY?: number,
+  points: number
 }
 
 interface QuizProps {
@@ -42,6 +43,8 @@ const Quiz: React.FC<QuizProps> = ({
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [startTime, setStartTime] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [totalPoints, setTotalPoints] = useState(0);
+  const [points, setPoints] = useState(-1);
 
   useEffect(() => {
     if (showQuiz && !quizCompleted && startTime === null) {
@@ -61,8 +64,13 @@ const Quiz: React.FC<QuizProps> = ({
 
 
   const handleAnswer = () => {
+    if (points === -1) {
+      setPoints(questions[currentQuestion].points);
+    }
     const question = questions[currentQuestion];
     if (answer.toString().toLowerCase() === question.correctAnswer.toString().toLowerCase()) {
+      setTotalPoints(totalPoints + points);
+      setPoints(-1);
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setAnswer('');
@@ -75,6 +83,7 @@ const Quiz: React.FC<QuizProps> = ({
         onCompleted(duration);
       }
     } else {
+      setPoints(points - 10);
       setShowHint(true);
     }
   };
@@ -93,11 +102,16 @@ const Quiz: React.FC<QuizProps> = ({
   };
 
   const handleMapAnswer = async () => {
+    if (points === -1) {
+      setPoints(questions[currentQuestion].points);
+    }
     const question = questions[currentQuestion];
     console.log('pobieranie lokalizacji')
     let location = await Location.getCurrentPositionAsync({});
     console.log('pobieranie lokalizacji v2')
     if (calculateDistance({latitude: location.coords.latitude, longitude: location.coords.longitude}, {latitude: question.pointX as number, longitude: question.pointY as number}) < 0.1) {
+      setTotalPoints(totalPoints + points);
+      setPoints(-1);
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setAnswer('');
@@ -110,6 +124,7 @@ const Quiz: React.FC<QuizProps> = ({
         onCompleted(duration);
       }
     } else {
+      setPoints(points - 10);
       setShowHint(true);
     }
   };
@@ -206,6 +221,8 @@ const Quiz: React.FC<QuizProps> = ({
     modalContent = (
       <View style={styles.modalContent}>
         <Text style={styles.congratsMessage}>Gratulacje! Zakończyłeś quiz!</Text>
+        <Text style={styles.progressText}>Zdobyte punkty: {totalPoints}</Text>
+        <Text style={styles.progressText}>Czas trwania: {Math.floor((Date.now() - (startTime as number)) / 1000)} sekund</Text>
         <TouchableOpacity
           style={styles.hideQuizButton}
           onPress={closeModal}

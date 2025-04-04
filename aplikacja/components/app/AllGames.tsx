@@ -15,7 +15,8 @@ const mockQuestion : Question = {
   correctAnswer: 'none',
   hint: 'no hint for mock',
   question: 'this is a mock question, if you see it, there are questions missing',
-  type: 'string'
+  type: 'string',
+  points: 0
 }
 
 export default function AllGamesScreen({ 
@@ -137,6 +138,7 @@ export default function AllGamesScreen({
 
         task["Task Type"] == "Choice Task" ? console.log(options[task["Corrcect Option Index"]]) : null
 
+
         const mappedTask: Question = {
           id: task["Task Number"],
           type: taskTypeMap[task["Task Type"]] || "string",  
@@ -145,7 +147,8 @@ export default function AllGamesScreen({
           hint: task.Hints || undefined, 
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
-          pointY: task.CoordY || undefined,  
+          pointY: task.CoordY || undefined, 
+          points: task.Points || undefined,
         };
   
         questions.push(mappedTask);
