@@ -82,9 +82,7 @@ export default function AllGamesScreen({
   const fetchGames = async () => {
     setLoading(true);
     try {
-      console.log("Current filters:", filters);
       const gamesData = await getGames(filters);
-      console.log("Fetched games:", gamesData);
       setGames(gamesData);
     } catch (error) {
       console.error("Error fetching games:", error);
@@ -97,7 +95,6 @@ export default function AllGamesScreen({
   const fetchCities = async () => {
     try {
       const citiesData = await getCities();
-      console.log("Fetched cities:", citiesData);
       setCities(citiesData);
     } catch (error) {
       console.error("Error fetching cities:", error);
@@ -108,7 +105,6 @@ export default function AllGamesScreen({
   const fetchTags = async () => {
     try {
       const tagsData = await getTags();
-      console.log("Fetched tags:", tagsData);
       setTags(tagsData);
     } catch (error) {
       console.error("Error fetching tags:", error);
