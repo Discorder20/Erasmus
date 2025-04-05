@@ -17,7 +17,8 @@ const mockQuestion : Question = {
   correctAnswer: 'none',
   hint: 'no hint for mock',
   question: 'this is a mock question, if you see it, there are questions missing',
-  type: 'string'
+  type: 'string',
+  points: 0
 }
 
 export default function AllGamesScreen({ 
@@ -83,9 +84,7 @@ export default function AllGamesScreen({
   const fetchGames = async () => {
     setLoading(true);
     try {
-      console.log("Current filters:", filters);
       const gamesData = await getGames(filters);
-      console.log("Fetched games:", gamesData);
       setGames(gamesData);
     } catch (error) {
       console.error("Error fetching games:", error);
@@ -98,7 +97,6 @@ export default function AllGamesScreen({
   const fetchCities = async () => {
     try {
       const citiesData = await getCities();
-      console.log("Fetched cities:", citiesData);
       setCities(citiesData);
     } catch (error) {
       console.error("Error fetching cities:", error);
@@ -109,7 +107,6 @@ export default function AllGamesScreen({
   const fetchTags = async () => {
     try {
       const tagsData = await getTags();
-      console.log("Fetched tags:", tagsData);
       setTags(tagsData);
     } catch (error) {
       console.error("Error fetching tags:", error);
@@ -146,6 +143,7 @@ export default function AllGamesScreen({
 
         task["Task Type"] == "Choice Task" ? console.log(options[task["Corrcect Option Index"]]) : null
 
+
         const mappedTask: Question = {
           id: task["Task Number"],
           type: taskTypeMap[task["Task Type"]] || "string",  
@@ -154,7 +152,8 @@ export default function AllGamesScreen({
           hint: hint || undefined, 
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
-          pointY: task.CoordY || undefined,  
+          pointY: task.CoordY || undefined, 
+          points: task.Points || undefined,
         };
   
         questions.push(mappedTask);
