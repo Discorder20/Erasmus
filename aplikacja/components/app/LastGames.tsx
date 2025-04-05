@@ -30,12 +30,19 @@ const mapTasksToQuestions = (tasksArray: any[][]): Question[] => {
           options = undefined;
         }
 
+        let hint = task.Hints;
+        try {
+          hint = JSON.parse(hint); 
+        }catch (e) {
+          hint = undefined;
+        }
+
         const mappedTask: Question = {
           id: task["Task Number"],
           type: taskTypeMap[task["Task Type"]] || "string",  
           question: task.Question,
           correctAnswer: task.Answer || task["Corrcect Option Index"] || undefined,  
-          hint: task.Hints || undefined, 
+          hint: hint || undefined, 
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
           pointY: task.CoordY || undefined,  
@@ -60,8 +67,9 @@ export default function AllGamesScreen() {
   const fetchGames = async () => {
     setLoading(true);
     try {
-      const storedGames = await AsyncStorage.getItem("games");
+      const storedGames = await AsyncStorage.getItem("openedGames"); 
       const gamesData = storedGames ? JSON.parse(storedGames) : [];
+      console.log("Pobrane gry z AsyncStorage:", gamesData); 
       setGames(gamesData);
     } catch (error) {
       console.error("Błąd pobierania gier z AsyncStorage:", error);
@@ -70,44 +78,12 @@ export default function AllGamesScreen() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     const initializeApp = async () => {
       if (loaded) {
         await SplashScreen.hideAsync();
-      }
-
-      try {
-        const storedGames = await AsyncStorage.getItem("games");
-        if (!storedGames) {
-          const initialGames = [
-            {
-              id: 1,
-              title: "Sylwester u Zduniaka",
-              City: "Gąbin",
-              DateOfCreation: "2024-12-31",
-              Description: "Impreza sylwestrowa ze wstępem wolnym dla każdego w Przytułach",
-              Tag: "",
-              Tags: ["Zabawa", "Ciekawe", "Nie zdrowe"],
-              Tasks: [],
-              User: "Filip",
-            },
-            {
-              id: 2,
-              title: "Rowerowe szaleństwo",
-              City: "Gąbin",
-              DateOfCreation: "2025-01-13",
-              Description: "Zapraszam wszystkich zainteresowanych do wspólnych szaleństw na Pump Tracku. Wszyscy mile widziani.",
-              Tag: "",
-              Tags: ["Sport", "Dla każdego", "Wyczynowe"],
-              Tasks: [],
-              User: "Wiktor",
-            },
-          ];
-          await AsyncStorage.setItem("games", JSON.stringify(initialGames));
-        }
-      } catch (error) {
-        console.error("Błąd zapisu gier do AsyncStorage:", error);
       }
 
       fetchGames();
@@ -144,6 +120,7 @@ export default function AllGamesScreen() {
               </View>
                 <Quiz
                   questions={mapTasksToQuestions([item.Tasks || []])}
+                  addToAS={() => undefined}
                   triggerText="Rozpocznij Quiz"
                   submitText="Zatwierdź odpowiedź"
                   onCompleted={handleQuizCompleted}

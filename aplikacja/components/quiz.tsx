@@ -23,6 +23,7 @@ interface QuizProps {
   submitText: string;
   title: string;
   description: string;
+  addToAS: () => void;
   onCompleted: (duration: number) => void;
 }
 
@@ -32,6 +33,7 @@ const Quiz: React.FC<QuizProps> = ({
   submitText, 
   title, 
   description, 
+  addToAS,
   onCompleted 
 }) => {
   const [showQuiz, setShowQuiz] = useState(false);
@@ -127,6 +129,7 @@ const Quiz: React.FC<QuizProps> = ({
   const startQuiz = () => {
     setShowStartPage(false);
     setShowQuiz(true);
+    addToAS();
   };
 
   const resetQuiz = () => {
