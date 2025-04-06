@@ -19,11 +19,7 @@ import type { Configuration } from './configuration';
 import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 
-<<<<<<< HEAD
-export const BASE_PATH = "http://192.168.119.186:8000".replace(/\/+$/, "");
-=======
-export const BASE_PATH = "http://192.168.1.19:8000".replace(/\/+$/, "");
->>>>>>> 85b29331eab221c54873a65acd3066f266f6ec63
+export const BASE_PATH = "https://erasmusapi.onrender.com/".replace(/\/+$/, "");
 
 /**
  *
