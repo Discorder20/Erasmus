@@ -4,6 +4,8 @@ import { FlatList, View, Text, TouchableOpacity, StyleSheet, Alert, TextInput, P
 import { useFonts } from "expo-font";
 import Quiz, { type Question, type QuestionType } from "../quiz";
 import { Picker } from '@react-native-picker/picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const handleQuizCompleted = (duration: number) => {
   console.log(`Quiz completed in ${duration} seconds`);
@@ -132,6 +134,13 @@ export default function AllGamesScreen({
           options = undefined;
         }
 
+        let hint = task.Hints;
+        try {
+          hint = JSON.parse(hint); 
+        }catch (e) {
+          hint = undefined;
+        }
+
         task["Task Type"] == "Choice Task" ? console.log(options[task["Corrcect Option Index"]]) : null
 
 
@@ -140,7 +149,7 @@ export default function AllGamesScreen({
           type: taskTypeMap[task["Task Type"]] || "string",  
           question: task.Question,
           correctAnswer: task.Answer || (task["Corrcect Option Index"] ? options[task["Corrcect Option Index"]] : undefined),  
-          hint: task.Hints || undefined, 
+          hint: hint || undefined, 
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
           pointY: task.CoordY || undefined, 
@@ -153,6 +162,24 @@ export default function AllGamesScreen({
   
     return questions;
   };
+
+  const saveGameToStorage = async (gameData: any) => {
+  try {
+    const storedData = await AsyncStorage.getItem("openedGames");
+    const openedGames = storedData ? JSON.parse(storedData) : [];
+
+    const exists = openedGames.some((game: any) => game.title === gameData.title);
+
+    if (!exists) {
+      openedGames.push(gameData);
+      await AsyncStorage.setItem("openedGames", JSON.stringify(openedGames));
+      console.log("Gra zapisana:", gameData.title);
+    }
+  } catch (error) {
+    console.error("Błąd zapisu gry:", error);
+  }
+};
+  
 
   // Initial data loading
   useEffect(() => {
@@ -331,6 +358,10 @@ export default function AllGamesScreen({
               </View>
               <Quiz
                 questions={item.Tasks.length > 0 ? mapTasksToQuestions([item.Tasks || []]) : [mockQuestion]}
+                addToAS={() => {
+                  console.log("saveGameToStorage is being called");
+                  saveGameToStorage(item);
+                }}
                 triggerText="Rozpocznij Quiz"
                 submitText="Zatwierdź odpowiedź"
                 onCompleted={handleQuizCompleted}

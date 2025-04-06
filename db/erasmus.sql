@@ -205,7 +205,8 @@ INSERT INTO `number_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`
 (3, 3, 1, 52.559100, 19.695200, 5, 'Ile schodów prowadzi do wejścia do Ratusza?', 2, '["Policz dokładnie!"]'),
 (4, 6, 1, 52.546007, 19.685939, 5, 'Ile lwów znajduje się przed ratuszem?', 2, '["Znajdują się po obu stronach wejścia."]'),
 (5, 5, 2, 52.545007, 19.684939, 5, 'Ile postaci przedstawia mural nad murami?', 4, '["Zwróć uwagę na detale."]'),
-(6, 4, 1, 52.545000, 19.684900, 5, 'Ile witraży znajduje się w głównym oknie katedry?', 7, '["Spójrz nad wejście."]');
+(6, 4, 1, 52.545000, 19.684900, 5, 'Ile witraży znajduje się w głównym oknie katedry?', 7, '["Spójrz nad wejście."]'),
+(7, 6, 1, 52.546007, 19.685939, 5, 'W którym roku zakończono budowę katedry?', 1144, '["Patyk, patyk, krzesło, krzesło"]');
 
 -- --------------------------------------------------------
 

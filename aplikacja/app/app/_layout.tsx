@@ -10,6 +10,7 @@ import { useColorScheme } from "@/hooks/useColorScheme"
 
 import MyMapScreen from "./(tabs)/mapScreen"
 import InCreate from "./(tabs)/inCreate"
+import aboutProject from "./(tabs)/aboutProject"
 import AllGames from "@/components/app/AllGames"
 import LastGames from "@/components/app/LastGames"
 
@@ -34,6 +35,7 @@ export default function RootLayout({ handleSignOut, getGames, getCities, getTags
     // { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
     // { name: "USTAWIENIA", id: "Settings", component: InCreate, icon: require("@/assets/images/settings.png") },
     { name: "WSZYSTKIE GRY", id: "AllGames", component: ProvidedAllGames },
+    { name: "O projekcie", id: "aboutProject", component: aboutProject },
     // { name: "Mapa", id: "Map", component: MyMapScreen },
     { name: "Wyloguj się", id: "Wyloguj się", component: SignOut },
   ]
