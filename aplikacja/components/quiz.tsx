@@ -46,11 +46,13 @@ const Quiz: React.FC<QuizProps> = ({
   const [startTime, setStartTime] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [totalPoints, setTotalPoints] = useState(0);
-  const [points, setPoints] = useState(-1);
+  const [miss, setMiss] = useState(0);
 
   useEffect(() => {
     if (showQuiz && !quizCompleted && startTime === null) {
       setStartTime(Date.now());
+      setTotalPoints(0);
+      setMiss(0);
     }
   }, [showQuiz, quizCompleted, startTime]);
 
@@ -66,17 +68,15 @@ const Quiz: React.FC<QuizProps> = ({
 
 
   const handleAnswer = () => {
-    if (points === -1) {
-      setPoints(questions[currentQuestion].points);
-    }
     const question = questions[currentQuestion];
     if (answer.toString().toLowerCase() === question.correctAnswer.toString().toLowerCase()) {
-      setTotalPoints(totalPoints + points);
-      setPoints(-1);
+      console.log('adding points...', totalPoints, questions[currentQuestion].points, miss);
+      setTotalPoints(totalPoints + Math.max(questions[currentQuestion].points - (miss * 10), 0));
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setAnswer('');
         setShowHint(false);
+        setMiss(0);
       } else {
         // Quiz completed
         setQuizCompleted(true);
@@ -85,7 +85,7 @@ const Quiz: React.FC<QuizProps> = ({
         onCompleted(duration);
       }
     } else {
-      setPoints(points - 10);
+      setMiss(miss + 1);
       setShowHint(true);
     }
   };
@@ -104,20 +104,17 @@ const Quiz: React.FC<QuizProps> = ({
   };
 
   const handleMapAnswer = async () => {
-    if (points === -1) {
-      setPoints(questions[currentQuestion].points);
-    }
     const question = questions[currentQuestion];
     console.log('pobieranie lokalizacji')
     let location = await Location.getCurrentPositionAsync({});
     console.log('pobieranie lokalizacji v2')
     if (calculateDistance({latitude: location.coords.latitude, longitude: location.coords.longitude}, {latitude: question.pointX as number, longitude: question.pointY as number}) < 0.1) {
-      setTotalPoints(totalPoints + points);
-      setPoints(-1);
+      setTotalPoints(totalPoints + Math.max(questions[currentQuestion].points - (miss * 10), 0));
       if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
         setAnswer('');
         setShowHint(false);
+        setMiss(0);
       } else {
         // Quiz completed
         setQuizCompleted(true);
@@ -126,7 +123,7 @@ const Quiz: React.FC<QuizProps> = ({
         onCompleted(duration);
       }
     } else {
-      setPoints(points - 10);
+      setMiss(miss + 1);
       setShowHint(true);
     }
   };
