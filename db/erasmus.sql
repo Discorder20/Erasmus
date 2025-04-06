@@ -82,7 +82,7 @@ CREATE TABLE `games` (
   `id` int(11) NOT NULL,
   `author_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `creation_date` date NOT NULL DEFAULT current_timestamp(),
+  `creation_date` date NOT NULL,
   `coord_x` decimal(10,6) NOT NULL,
   `coord_y` decimal(10,6) NOT NULL,
   `description` text NOT NULL
@@ -172,9 +172,11 @@ CREATE TABLE `login_details` (
 --
 
 INSERT INTO `login_details` (`id`, `login`, `password`) VALUES
-(1, 'wiktor', '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b'),
-(2, 'filip', 'd4735e3a265e16eee03f59718b9b5d03019c07d8b6c51f90da3a666eec13ab35'),
-(3, 'pawel', '4e07408562bedb8b60ce05c1decfe3ad16b72230967de01f640b7e4729b49fce');
+(1, 'wiktor', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6Indpa3RvciJ9.URzz158aZAyZv_ReAfAUxLhhFfWJgl7u03gldB40AQdbHwjdazMQC6XlpY7yjnc0OLSbspi9FEjLSGjE_nuWMkXIoGCnJrwDO110yjhtWuRFzGUW3ZCIULlLCRXymBEjwwDHjT07dz_lB9RedOdPnh7dq1hBsP3N0ugaSYRA5Z4'),
+(2, 'filip', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6ImZpbGlwIn0.JpTlkX-eIGR5Qawg7_F2gx_4WyrqWkTDkeD3pbD6wWhlq17XSiqXI09GZMgINc-TYGZdJ28cWUMMYrmObV0eRlbhY6J4hgXm9zfI7iY240lKRQ6gNiNFeXEAzC0Dl97U_8DSF_3H192RAGJimIjfbfwBaY0hiCBt6Up3P6gACGU'),
+(3, 'pawel', 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXNzd29yZCI6InBhd2VsIn0.AtkIkvVJWjFOScd2dcOy53MqU_hCaY6K5iWPcauACN20che83s2-7jF_20lOoH5ZjwXBdvov5MeLoOgqFd-wWGgVvPJATPOPits6XsRaN2ms6GdZ7Unbx1JV22Q_i7DgGBKCBUySJq6cPGhPkZ7DmYfCPHjhKTwSj4ecaEUiIYQ');
+
+
 
 -- --------------------------------------------------------
 
