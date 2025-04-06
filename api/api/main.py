@@ -1,4 +1,5 @@
 from fastapi import *
+from fastapi_utilities import *
 from pydantic import *
 from jwt import *
 from datetime import *
@@ -15,6 +16,11 @@ privateKey=b"-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgGZyhuhfsywUuAalM2sBd3
 publicKey=b"-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZyhuhfsywUuAalM2sBd39j/erJ\nU7t8z0RAvBXiCEoaUZ1IqfhjuzFo/iapLaD/6rNHVkneGhSClumRkUpyvz6gTk9X\nEK8WcA6P4bQAqzwjzgShoXlO8zIRY90nMVsWQCK4y0BnPVR1L7hT7rNBqvS844NT\nokwfN0Rj7RqggKzXAgMBAAE=\n-----END PUBLIC KEY-----\n"
 key = "erasmusApiTokenKey"
 session = Session(engine)
+
+@repeat_every(seconds=900)
+async def checkConnection():
+    statement= select("Connection Renew")
+    session.execute(statement)
 
 @app.get('/')
 def readMain():
