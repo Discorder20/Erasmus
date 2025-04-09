@@ -1,9 +1,11 @@
 from fastapi import *
-from fastapi_utilities import *
 from pydantic import *
 from jwt import *
 from datetime import *
 from math import *
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.background import BackgroundScheduler  # runs tasks in the background
+from apscheduler.triggers.cron import CronTrigger  # allows us to specify a recurring time for execution
 
 from sqlalchemy import *
 from sqlalchemy.orm import Session
@@ -11,16 +13,28 @@ from sqlalchemy.orm import Session
 from api.models.models import *
 from database.config import engine
 
+
 app = FastAPI()
 privateKey=b"-----BEGIN RSA PRIVATE KEY-----\nMIICXAIBAAKBgGZyhuhfsywUuAalM2sBd39j/erJU7t8z0RAvBXiCEoaUZ1Iqfhj\nuzFo/iapLaD/6rNHVkneGhSClumRkUpyvz6gTk9XEK8WcA6P4bQAqzwjzgShoXlO\n8zIRY90nMVsWQCK4y0BnPVR1L7hT7rNBqvS844NTokwfN0Rj7RqggKzXAgMBAAEC\ngYBes6PuDvkr2IM88V2Unyh9xEsmzLDwcbGPoF+9wtJy3d1wDYnBqT+Tr0CxMFaT\nq76jt2AWrI9jQkyK4RtzvJr3786gKcQUJALc9CHc9/zdf/Vva2MMu3D/oLX2MLVy\nNUyNtGptRwTAPP3OpyVKFukRpFUbvPfO90CPoB6wsEHcMQJBAMyP9IXJf9NNWzPo\nU0/jj4vyYVrMsBpwLSFmNzkFCev4s3B0to7mJo1IWHHcr9WWOeslzjwHqRiEOXNs\nUUwkLzsCQQCANT+guViOIO4iXcIcJY3Tp+JjT254JANZjvT7RAtpuFuCwNUbU2vu\ndBL/QM2lNzeoI+rzzleth/iODUlsN5cVAkEAwKkkR40L0tscdrrtHGTaoZfakUYO\n5heYqcg3YoCYY6KMffGurs+cp5vnkPWktakTS6EDqA4e+HQwF8GAoBHEWQJAQk3H\ngzJ3lsF3BjTg3zeYun5XeS6qHd3aEaX6Ejwlft5GDT/2tjQVXHORI4r7D1eYJA+3\nQbFT7L2mEKjUcO/q5QJBAL1LTYmhc5LIUg+btQvM1gJyE/m/J09zBty8rVlB5aco\nHAu4xudgho+at24U+VjoQtF0fTSeoDTEu5rzDuM4Pqc=\n-----END RSA PRIVATE KEY-----\n"
 publicKey=b"-----BEGIN PUBLIC KEY-----\nMIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGZyhuhfsywUuAalM2sBd39j/erJ\nU7t8z0RAvBXiCEoaUZ1IqfhjuzFo/iapLaD/6rNHVkneGhSClumRkUpyvz6gTk9X\nEK8WcA6P4bQAqzwjzgShoXlO8zIRY90nMVsWQCK4y0BnPVR1L7hT7rNBqvS844NT\nokwfN0Rj7RqggKzXAgMBAAE=\n-----END PUBLIC KEY-----\n"
 key = "erasmusApiTokenKey"
 session = Session(engine)
 
-@repeat_every(seconds=900)
-async def checkConnection():
-    statement= select("Connection Renew")
+
+def croneFunction():
+    statement = Select(Users)
     session.execute(statement)
+    print("Crone function works")
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(croneFunction, 'interval' , seconds=300)
+scheduler.start()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    scheduler.shutdown()
 
 @app.get('/')
 def readMain():

@@ -266,7 +266,7 @@ INSERT INTO `text_tasks` (`id`, `game_id`, `task_number`, `coord_x`, `coord_y`, 
 CREATE TABLE `tokens` (
   `id` int(11) NOT NULL,
   `expiration_time` datetime NOT NULL,
-  `token` varchar(255) NOT NULL
+  `token` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
