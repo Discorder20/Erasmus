@@ -27,7 +27,7 @@ def croneFunction():
     print("Crone function works")
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(croneFunction, 'interval' , seconds=300)
+scheduler.add_job(croneFunction, 'interval' , seconds=5)
 scheduler.start()
 
 
