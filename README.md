@@ -29,7 +29,7 @@
 > 5. Api will start on 127.0.0.1:8000/docs
 > 
 > **How to start up Api in network if not working**
-> 1. You have to go on this website "https://aiven.io/" and log in by mail: elektrykerasmus@gmail.com hasło: jyhCo6-qesqor-syhhor
+> 1. You have to go on this website "https://aiven.io/" and log in by **mail: elektrykerasmus@gmail.com hasło: jyhCo6-qesqor-syhhor**
 > 2. Next you have to click on three dots and  click power on service
 > 3. Next go to website "https://render.com/" and login with the same data, that were used in aiven
 > 4. Next click service named ErasmusApi, click Manual Deploy and click deploy latest commit
