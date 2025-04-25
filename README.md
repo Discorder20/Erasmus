@@ -1,4 +1,4 @@
-# Repository of the Api(v 0.2)
+# Repository of the Api(v 0.5)
 
 ## What Api do now
 - Returns FirsName, LastName, login and password of specific user by his id
