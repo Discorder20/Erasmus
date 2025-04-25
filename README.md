@@ -5,10 +5,11 @@
 - Can Create a new user and save him in database
 - Can generate token save it check if it is actual and update if not
 - Can login by token and login and password
-- Search game by filter and sort it
+- Search game by filters and sort it
 - Getting all cities in database
 - Create new game
-
+- Getting all tags in database
+ 
 ## List of Tasks
 - [x] Integrate with Render
 - [x] Sign up of user
@@ -17,7 +18,8 @@
 - [x] Searching of games by many filter and by sorting
 - [x] Geting all cities
 - [x] Creating new games
-
+- [x] Geting all tags
+ 
 > [!IMPORTANT]
 > **How to start up Api on your system (in actual state of App and database)**
 > 1. First of all you need to import database to your phpmyadmin, name it erasmus. Database is in db directory
