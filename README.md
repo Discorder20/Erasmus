@@ -37,4 +37,4 @@
 > **If u have trouble with api, just write it on discord server of erasmus in tab Api chat reports**
 
 > [!TIP]
-> **Remeber that the Swager window of the api is on 127.0.0.1:8000/docs**
+> **Remeber that the Swager window of the api is on  api_url/docs**
