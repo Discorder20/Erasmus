@@ -21,14 +21,14 @@
 - [x] Geting all tags
  
 > [!IMPORTANT]
-> **How to start up Api on your system (in actual state of App and database)**
+> **How to start up Api on your system**
 > 1. First of all you need to import database to your phpmyadmin, name it erasmus. Database is in db directory
 > 2. You have to have user name root without password and your server must running on localhost
 > 3. If u are doing it on local machine u have to go to ./api/database/config.py and change variable isLocal to true
 > 4. In this step all you need to do is double click on file named StartApp.bat it will lunch Api server with all dependency
 > 5. Api will start on 127.0.0.1:8000/docs
 > 
-> **How to start up Api in network**
+> **How to start up Api in network if not working**
 > 1. You have to go on this website "https://aiven.io/" and log in by email and password of the erasmus mail account (it is on discord of erasmus in info/links section)
 > 2. Next you have to click on three dots and  click power on service
 > 3. Next go to website "https://render.com/" and login with the same data, that were used in aiven
