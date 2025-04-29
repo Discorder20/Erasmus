@@ -7,8 +7,8 @@ import { Picker } from '@react-native-picker/picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const handleQuizCompleted = (duration: number) => {
-  console.log(`Quiz completed in ${duration} seconds`);
+const handleQuizCompleted = (duration: number, points: number) => {
+  console.log(`Quiz completed in ${duration} seconds with ${points} points`);
   // You can add more logic here, such as sending the result to a server
 }
 
@@ -126,61 +126,58 @@ export default function AllGamesScreen({
   
     tasksArray.forEach((tasks) => {
       tasks.forEach((task) => {
-
-        let options = task.Options;
+        let options;
         try {
-          options = JSON.parse(options); 
-        }catch (e) {
+          options = typeof task.Options === 'string' ? JSON.parse(task.Options) : task.Options;
+        } catch (e) {
           options = undefined;
         }
 
-        let hint = task.Hints;
+        let hint;
         try {
-          hint = JSON.parse(hint); 
-        }catch (e) {
+          hint = typeof task.Hints === 'string' ? JSON.parse(task.Hints) : task.Hints;
+        } catch (e) {
           hint = undefined;
         }
 
-        task["Task Type"] == "Choice Task" ? console.log(options[task["Corrcect Option Index"]]) : null
-
-
+        // Ensure we have a valid question with required fields
         const mappedTask: Question = {
-          id: task["Task Number"],
+          id: task["Task Number"] || Math.random(),
           type: taskTypeMap[task["Task Type"]] || "string",  
-          question: task.Question,
-          correctAnswer: task.Answer || (task["Corrcect Option Index"] ? options[task["Corrcect Option Index"]] : undefined),  
-          hint: hint || undefined, 
-          options: options || undefined,  
-          pointX: task.CoordX || undefined, 
-          pointY: task.CoordY || undefined, 
-          points: task.Points || undefined,
+          question: task.Question || "No question provided",
+          correctAnswer: task.Answer || (task["Corrcect Option Index"] !== undefined && options ? 
+            options[task["Corrcect Option Index"]] : ""),  
+          hint: hint || "No hint available", 
+          options: options || [],  
+          pointX: task.CoordX || 0, 
+          pointY: task.CoordY || 0, 
+          points: task.Points || 10,
         };
   
         questions.push(mappedTask);
       });
     });
   
-    return questions;
+    return questions.length > 0 ? questions : [mockQuestion];
   };
 
   const saveGameToStorage = async (gameData: any) => {
-  try {
-    const storedData = await AsyncStorage.getItem("openedGames");
-    const openedGames = storedData ? JSON.parse(storedData) : [];
+    try {
+      const storedData = await AsyncStorage.getItem("openedGames");
+      const openedGames = storedData ? JSON.parse(storedData) : [];
 
-    const exists = openedGames.some((game: any) => game.title === gameData.title);
+      const exists = openedGames.some((game: any) => game.title === gameData.title);
 
-    if (!exists) {
-      openedGames.push(gameData);
-      await AsyncStorage.setItem("openedGames", JSON.stringify(openedGames));
-      console.log("Gra zapisana:", gameData.title);
+      if (!exists) {
+        openedGames.push(gameData);
+        await AsyncStorage.setItem("openedGames", JSON.stringify(openedGames));
+        console.log("Gra zapisana:", gameData.title);
+      }
+    } catch (error) {
+      console.error("Błąd zapisu gry:", error);
     }
-  } catch (error) {
-    console.error("Błąd zapisu gry:", error);
-  }
-};
+  };
   
-
   // Initial data loading
   useEffect(() => {
     if (loaded) {
@@ -188,15 +185,21 @@ export default function AllGamesScreen({
     }
 
     const fetchData = async () => {
-      setTags(await getTags());
-      setCities(await getCities());
-      fetchGames();
+      try {
+        const [tagsData, citiesData] = await Promise.all([
+          getTags(),
+          getCities()
+        ]);
+        setTags(tagsData);
+        setCities(citiesData);
+        await fetchGames();
+      } catch (error) {
+        console.error("Error during initial data loading:", error);
+      }
     };
 
     fetchData();
-  }, [loaded]);
-
-  // Fetch games when filters change
+  }, []);
 
   // Reset filters function
   const resetFilters = () => {
@@ -213,6 +216,7 @@ export default function AllGamesScreen({
       author: '',
       date: '',
     });
+    fetchGames();
   };
 
   if (!loaded) {
@@ -231,86 +235,86 @@ export default function AllGamesScreen({
       </TouchableOpacity>
       
       {filtersVisible && (
-        <>
-        <ScrollView style={styles.filterSection}>
-          <Text style={styles.pickerLabel}>Wybierz tag:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={filters.tag}
-              onValueChange={(value) => setFilters(prev => ({ ...prev, tag: value }))}
-              style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
-              mode={"dialog"}
-            >
-              <Picker.Item label="Wybierz tag" value={undefined} />
-              {tags.length > 0 ? (
-                tags.map((tag, index) => (
-                  <Picker.Item key={index} label={tag.name} value={tag.name} />
-                ))
-              ) : (
-                <Picker.Item label="Brak dostępnych tagów" value={undefined} />
-              )}
-            </Picker>
-          </View>
+        <View style={styles.filtersWrapper}>
+          <ScrollView style={styles.filterSection}>
+            <Text style={styles.pickerLabel}>Wybierz tag:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={filters.tag}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, tag: value }))}
+                style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
+                mode={"dialog"}
+              >
+                <Picker.Item label="Wybierz tag" value={undefined} />
+                {tags.length > 0 ? (
+                  tags.map((tag, index) => (
+                    <Picker.Item key={index} label={tag.name} value={tag.name} />
+                  ))
+                ) : (
+                  <Picker.Item label="Brak dostępnych tagów" value={undefined} />
+                )}
+              </Picker>
+            </View>
 
-          <TextInput
-            placeholder="Wprowadź nazwę gry"
-            value={inputValues.name}
-            onChangeText={(value) => handleInputChange("name", value)}
-            style={styles.input}
-          />
+            <TextInput
+              placeholder="Wprowadź nazwę gry"
+              value={inputValues.name}
+              onChangeText={(value) => handleInputChange("name", value)}
+              style={styles.input}
+            />
 
-          <TextInput
-            placeholder="Wprowadź autora"
-            value={inputValues.author}
-            onChangeText={(value) => handleInputChange("author", value)}
-            style={styles.input}
-          />
+            <TextInput
+              placeholder="Wprowadź autora"
+              value={inputValues.author}
+              onChangeText={(value) => handleInputChange("author", value)}
+              style={styles.input}
+            />
 
-          <TextInput
-            placeholder="Wprowadź datę (yyyy-mm-dd)"
-            value={inputValues.date}
-            onChangeText={(value) => handleInputChange("date", value)}
-            style={styles.input}
-          />
+            <TextInput
+              placeholder="Wprowadź datę (yyyy-mm-dd)"
+              value={inputValues.date}
+              onChangeText={(value) => handleInputChange("date", value)}
+              style={styles.input}
+            />
 
-          <Text style={styles.pickerLabel}>Wybierz miasto:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={filters.city}
-              onValueChange={(value) => setFilters(prev => ({ ...prev, city: value }))}
-              style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
-              mode={"dialog"}
-            >
-              <Picker.Item label="Wybierz miasto" value={undefined} />
-              {cities.length > 0 ? (
-                cities.map((city, index) => (
-                  <Picker.Item key={index} label={city.name} value={city.name} />
-                ))
-              ) : (
-                <Picker.Item label="Brak dostępnych miast" value={undefined} />
-              )}
-            </Picker>
-          </View>
+            <Text style={styles.pickerLabel}>Wybierz miasto:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={filters.city}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, city: value }))}
+                style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
+                mode={"dialog"}
+              >
+                <Picker.Item label="Wybierz miasto" value={undefined} />
+                {cities.length > 0 ? (
+                  cities.map((city, index) => (
+                    <Picker.Item key={index} label={city.name} value={city.name} />
+                  ))
+                ) : (
+                  <Picker.Item label="Brak dostępnych miast" value={undefined} />
+                )}
+              </Picker>
+            </View>
 
-          <Text style={styles.pickerLabel}>Sortuj po:</Text>
-          <View style={styles.pickerContainer}>
-            <Picker
-              selectedValue={filters.sort}
-              onValueChange={(value) => setFilters(prev => ({ ...prev, sort: value }))}
-              style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
-              mode={"dialog"}
-            >
-              <Picker.Item label="Wybierz opcję" value={undefined} />
-              <Picker.Item label="Tag" value="tag" />
-              <Picker.Item label="Name" value="name" />
-              <Picker.Item label="Author" value="author" />
-              <Picker.Item label="Date" value="date" />
-              <Picker.Item label="City" value="city" />
-            </Picker>
-          </View>
-
-        </ScrollView>
-      <View style={styles.buttonRow}>
+            <Text style={styles.pickerLabel}>Sortuj po:</Text>
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={filters.sort}
+                onValueChange={(value) => setFilters(prev => ({ ...prev, sort: value }))}
+                style={{...styles.picker, ...(Platform.OS === 'ios' ? { height: 150, margin: 0, padding: 0 } : {})}}
+                mode={"dialog"}
+              >
+                <Picker.Item label="Wybierz opcję" value={undefined} />
+                <Picker.Item label="Tag" value="tag" />
+                <Picker.Item label="Name" value="name" />
+                <Picker.Item label="Author" value="author" />
+                <Picker.Item label="Date" value="date" />
+                <Picker.Item label="City" value="city" />
+              </Picker>
+            </View>
+          </ScrollView>
+          
+          <View style={styles.buttonRow}>
             <TouchableOpacity 
               onPress={applyFilters} 
               style={styles.applyButton}
@@ -325,9 +329,7 @@ export default function AllGamesScreen({
               <Text style={styles.buttonText}>Zresetuj</Text>
             </TouchableOpacity>
           </View>
-
-          </>
-
+        </View>
       )}
       
       {loading ? (
@@ -339,41 +341,80 @@ export default function AllGamesScreen({
           <Text style={styles.emptyText}>Nie znaleziono gier</Text>
         </View>
       ) : (
-        <FlatList
-          data={games}
-          renderItem={({ item }) => {return (
-            <View style={styles.gameItem}>
-              <View style={styles.gameTextContainer}>
-                <Text style={styles.gameTitle}>{item.title}</Text>
-                <Text style={styles.gameDescription}>
-                  {item.Description?.length > 70 
-                    ? `${item.Description.substring(0, 70)}...` 
-                    : item.Description || "No description available"}
-                </Text>
-                {item.tag && (
-                  <View style={styles.tagContainer}>
-                    <Text style={styles.tagText}>{item.tag}</Text>
-                  </View>
-                )}
-              </View>
-              <Quiz
-                questions={item.Tasks.length > 0 ? mapTasksToQuestions([item.Tasks || []]) : [mockQuestion]}
-                addToAS={() => {
-                  console.log("saveGameToStorage is being called");
-                  saveGameToStorage(item);
-                }}
-                triggerText="Rozpocznij Quiz"
-                submitText="Zatwierdź odpowiedź"
-                onCompleted={handleQuizCompleted}
-                title={item.title}
-                description={item.Description}
-              />
+        // <FlatList
+        //   data={games}
+        //   renderItem={({ item }) => (
+        //     <View style={styles.gameItem}>
+        //       <View style={styles.gameTextContainer}>
+        //         <Text style={styles.gameTitle}>{item.title}</Text>
+        //         <Text style={styles.gameDescription}>
+        //           {item.Description?.length > 70 
+        //             ? `${item.Description.substring(0, 70)}...` 
+        //             : item.Description || "No description available"}
+        //         </Text>
+        //         {item.tag && (
+        //           <View style={styles.tagContainer}>
+        //             <Text style={styles.tagText}>{item.tag}</Text>
+        //           </View>
+        //         )}
+        //       </View>
+              
+        //       {/* Key fix: Wrap Quiz in a View with flex: 0 to prevent it from expanding and capturing all touches */}
+        //       <View style={styles.quizButtonContainer}>
+        //         <Quiz
+        //           questions={item.Tasks && item.Tasks.length > 0 
+        //             ? mapTasksToQuestions([item.Tasks]) 
+        //             : [mockQuestion]}
+        //           addToAS={() => {
+        //             console.log("saveGameToStorage is being called");
+        //             saveGameToStorage(item);
+        //           }}
+                  
+        //           triggerText="Rozpocznij Quiz"
+        //           submitText="Zatwierdź odpowiedź"
+        //           onCompleted={handleQuizCompleted}
+        //           title={item.title}
+        //           description={item.Description || "No description available"}
+        //         />
+        //       </View>
+        //     </View>
+        //   )}
+        //   keyExtractor={(item, index) => (item.id ? item.id.toString() : `game-${index}`)}
+        // />
+  <FlatList
+    removeClippedSubviews={false}
+    data={games}
+    renderItem={({ item }) => (
+      <View style={styles.gameItem}>
+        <View style={styles.gameTextContainer}>
+          <Text style={styles.gameTitle}>{item.title}</Text>
+          <Text style={styles.gameDescription}>
+            {item.Description?.length > 70
+              ? `${item.Description.substring(0, 70)}...`
+              : item.Description || "Brak opisu"}
+          </Text>
+          {item.tag && (
+            <View style={styles.tagContainer}>
+              <Text style={styles.tagText}>{item.tag}</Text>
             </View>
-          )}}
-          keyExtractor={(item, index) => (item.id ? item.id.toString() : `game-${index}`)}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
+          )}
+        </View>
+        <View style={styles.quizButtonContainer}>
+          <Quiz
+            questions={mapTasksToQuestions([item.Tasks || []])}
+            addToAS={() => saveGameToStorage(item)}
+            triggerText="Rozpocznij Quiz"
+            submitText="Zatwierdź odpowiedź"
+            onCompleted={handleQuizCompleted}
+            title={item.title}
+            description={item.Description || "Brak opisu"}
+          />
+        </View>
+      </View>
+    )}
+    keyExtractor={(item, index) => item.id ? item.id.toString() : `game-${index}`}
+    contentContainerStyle={styles.listContent}
+  />
       )}
     </View>
   );
@@ -398,13 +439,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
   },
-  filterSection: {
+  filtersWrapper: {
     marginBottom: 20,
+  },
+  filterSection: {
     backgroundColor: "#fff",
     padding: 15,
     borderRadius: 10,
     elevation: 2,
-    height: 500,
+    maxHeight: 500,
   },
   input: {
     borderWidth: 1,
@@ -427,7 +470,6 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderRadius: 8,
     marginBottom: 8,
-
     backgroundColor: "#fafafa",
     overflow: "hidden",
   },
@@ -439,7 +481,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginTop: 15,
-    paddingBottom: 10
+    marginBottom: 10,
   },
   applyButton: {
     backgroundColor: "#4CAF50",
@@ -455,13 +497,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flex: 1,
     marginLeft: 8,
-    alignItems: "center",
-  },
-  refreshButton: {
-    backgroundColor: "#2196F3",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 15,
     alignItems: "center",
   },
   buttonText: {
@@ -480,12 +515,16 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     shadowOffset: { width: 0, height: 3 },
     elevation: 3,
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   gameTextContainer: {
     flex: 1,
     marginRight: 15,
+  },
+  quizButtonContainer: {
+    // This is crucial - it prevents the Quiz component from expanding and capturing all touches
+    flex: 0,
+    width: 'auto',
   },
   gameTitle: {
     fontSize: 18,

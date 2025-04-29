@@ -37,6 +37,7 @@ const mapTasksToQuestions = (tasksArray: any[][]): Question[] => {
           hint = undefined;
         }
 
+
         const mappedTask: Question = {
           id: task["Task Number"],
           type: taskTypeMap[task["Task Type"]] || "string",  
@@ -46,13 +47,13 @@ const mapTasksToQuestions = (tasksArray: any[][]): Question[] => {
           options: options || undefined,  
           pointX: task.CoordX || undefined, 
           pointY: task.CoordY || undefined,  
+          points: task.Points
         };
   
         questions.push(mappedTask);
       });
     });
 
-    console.log(questions);
   
     return questions;
   };
@@ -64,12 +65,13 @@ export default function AllGamesScreen() {
   const [games, setGames] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  console.log(JSON.stringify(games));
+
   const fetchGames = async () => {
     setLoading(true);
     try {
       const storedGames = await AsyncStorage.getItem("openedGames"); 
       const gamesData = storedGames ? JSON.parse(storedGames) : [];
-      console.log("Pobrane gry z AsyncStorage:", gamesData); 
       setGames(gamesData);
     } catch (error) {
       console.error("Błąd pobierania gier z AsyncStorage:", error);
